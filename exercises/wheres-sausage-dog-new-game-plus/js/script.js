@@ -41,7 +41,7 @@ function createSausageDog() {
 }
 
 function draw() {
-  background(255, 255, 0);
+  background(0, 255, 255); // cyan
 
   for (let i = 0; i < animals.length; i++) {
     animals[i].update();

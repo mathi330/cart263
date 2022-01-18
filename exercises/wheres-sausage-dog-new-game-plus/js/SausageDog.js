@@ -9,7 +9,12 @@ class SausageDog extends Animal {
   update() {
     super.update();
     if (this.found) {
-      this.angle += this.rotationSpeed;
+      // makes the sausage dog rotate according to its original tilt
+      if (this.angle < 0) {
+        this.angle -= this.rotationSpeed;
+      } else {
+        this.angle += this.rotationSpeed;
+      }
     }
   }
 
