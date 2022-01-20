@@ -11,14 +11,18 @@ let animals = [];
 let sausageDogImage = undefined;
 let sausageDog = undefined;
 
-let state = `start`; // start, easy, normal, hard, win, lose
+let state = `start`; // start, easy, normal, hard, win
 
+// buttons to choose level
 let easy = undefined;
 let normal = undefined;
 let hard = undefined;
+// colors for the buttons
 let colorEasy = undefined;
 let colorNormal = undefined;
 let colorHard = undefined;
+// button to restart
+let restart = undefined;
 
 function preload() {
   for (let i = 0; i < NUM_ANIMAL_IMAGES; i++) {
@@ -36,11 +40,20 @@ function setup() {
   colorNormal = color(0, 255, 255); //cyan
   colorHard = color(255, 0, 255); //magenta
 
-  // createAnimals();
-  // createSausageDog();
   createButtons();
 }
 
+function createButtons() {
+  easy = new Button((width / 4) * 3, height / 4, colorEasy, `Easy`);
+  normal = new Button((width / 4) * 3, (height / 4) * 2, colorNormal, `Normal`);
+  hard = new Button((width / 4) * 3, (height / 4) * 3, colorHard, `Hard`);
+
+  let colorChoices = [colorEasy, colorNormal, colorHard];
+  let colorRestart = random(colorChoices);
+  restart = new Button(width / 3, height / 2, colorRestart, `Restart!`);
+}
+
+// create the animals that appear in the game
 function createAnimals(numAnimals) {
   for (let i = 0; i < numAnimals; i++) {
     let x = random(0, width);
@@ -55,15 +68,12 @@ function createSausageDog() {
   let y = random(0, height);
   sausageDog = new SausageDog(x, y, sausageDogImage);
 }
-function createButtons() {
-  easy = new Button((width / 4) * 3, height / 4, colorEasy, `Easy`);
-  normal = new Button((width / 4) * 3, (height / 4) * 2, colorNormal, `Normal`);
-  hard = new Button((width / 4) * 3, (height / 4) * 3, colorHard, `Hard`);
+
+function reset() {
+  animals = [];
 }
 
 function draw() {
-  // background(0, 255, 255); // cyan
-
   if (state === `start`) {
     start();
   } else if (state === `easy`) {
@@ -74,15 +84,13 @@ function draw() {
     levelHard();
   } else if (state === `win`) {
     win();
-  } else if (state === `lose`) {
-    lose();
   }
 }
 
 function start() {
-  background(255);
+  background(0);
   push();
-  fill(0);
+  fill(255);
   // Using textFont() to set the font to our embedded font
   textFont(`Indie Flower`);
   textAlign(CENTER, CENTER);
@@ -120,12 +128,33 @@ function levelHard() {
   displayAnimals();
 }
 
-// displays the animalls and the sausage dog for the game
+// displays the animals and the sausage dog for the game
 function displayAnimals() {
   for (let i = 0; i < animals.length; i++) {
     animals[i].update();
   }
   sausageDog.update();
+}
+
+function win() {
+  background(0);
+  push();
+  fill(255);
+  // Using textFont() to set the font to our embedded font
+  textFont(`Indie Flower`);
+  textAlign(CENTER, CENTER);
+  textSize(40);
+  translate((width / 3) * 2, height / 2);
+  rotate(0.15);
+  text(
+    `You are now the happy owner
+     of a sausage dog!`,
+    0,
+    0
+  );
+  pop();
+
+  restart.update();
 }
 
 function mousePressed() {
@@ -150,6 +179,16 @@ function mousePressed() {
   }
 
   if (state === `easy` || state === `normal` || state === `hard`) {
-    sausageDog.mousePressed();
+    let found = sausageDog.mousePressed();
+    if (found) {
+      setTimeout(() => {
+        state = `win`;
+      }, 2000);
+    }
+  }
+
+  if (state === `win` && restart.overlap()) {
+    state = `start`;
+    reset();
   }
 }

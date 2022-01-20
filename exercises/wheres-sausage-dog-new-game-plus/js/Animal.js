@@ -42,4 +42,12 @@ class Animal {
       return false;
     }
   }
+
+  mousePressed() {
+    if (this.overlap(mouseX, mouseY)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

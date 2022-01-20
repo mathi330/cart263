@@ -32,8 +32,10 @@ class Button {
   hoverChangeButtonColor() {
     if (this.overlap()) {
       fill(this.fill);
+      stroke(0);
     } else {
       fill(0);
+      stroke(this.fill);
     }
   }
 
@@ -48,11 +50,11 @@ class Button {
   display() {
     push();
     rectMode(CENTER);
-    noStroke();
     this.hoverChangeButtonColor();
     rect(this.x, this.y, this.width, this.height, this.radius);
 
     //text inside the button
+    noStroke();
     this.hoverChangeTextColor();
     textFont(`Indie Flower`);
     textAlign(CENTER, CENTER);
