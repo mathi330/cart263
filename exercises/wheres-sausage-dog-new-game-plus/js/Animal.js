@@ -13,8 +13,9 @@ class Animal {
     this.angle = random(-0.3, 0.3);
     // chooses a random width for the image as well as which way the animal is facing (height doesn't change)
     this.width = random(-1, 1);
+    this.height = 1;
     // while loop to make sure that the width of the image is not too small
-    while (this.width < 0.06 && this.width > -0.07) {
+    while (this.width < 0.1 && this.width > -0.1) {
       this.width = random(-1, 1);
     }
   }
@@ -37,7 +38,7 @@ class Animal {
     push();
     imageMode(CENTER);
     translate(this.x, this.y); // coordinates
-    scale(this.width, 1); // side and width of the image
+    scale(this.width, this.height); // side and width of the image
     rotate(this.angle); // inclination
     image(this.image, 0, 0); // image of the animal
     pop();

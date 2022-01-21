@@ -7,7 +7,8 @@ class SausageDog extends Animal {
     super(x, y, image); // same as the animal's constructor
 
     this.found = false; // was the dog found or not
-    this.rotationSpeed = 0.25; // rotation speed for when the dog is found
+    this.rotationSpeed = 0.2; // rotation speed for when the dog is found
+    this.growthSpeed = 0.01; // speed at which the dog grows when found
   }
 
   /**
@@ -28,6 +29,16 @@ class SausageDog extends Animal {
       else {
         this.angle += this.rotationSpeed; // rotate clockwise
       }
+
+      // makes the sausage dog become bigger
+      // if the scale of the width is negative:
+      if (this.width < 0) {
+        this.width -= this.growthSpeed; // substract the growthSpeed (to prevent distortion)
+      } else {
+        this.width += this.growthSpeed; // add the growthSpeed
+      }
+      // make it grow in height too so it keeps the same ratio
+      this.height += this.growthSpeed;
     }
   }
 
