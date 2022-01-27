@@ -2,10 +2,7 @@
 
 /*****************
 Slamina
-Pippin Barr
-A guessing game in which the page pronounces the name of an animal
-backwards and the user has to figure out what it was and say the
-name forwards.
+Mathilde Davan
 ******************/
 
 // An array of animal names from
@@ -147,6 +144,9 @@ const animals = [
   "zebra",
 ];
 
+// state for starting, ending screens, and the game
+let state = `start`;
+
 const QUESTION_DELAY = 2000; // in milliseconds
 
 // The current answer to display (we use it initially to display the click instruction)
@@ -185,7 +185,33 @@ Display the current answer.
 function draw() {
   background(0);
 
-  displayAnswer();
+  if (state === `start`) {
+    start();
+  } else if (state === `game`) {
+    game();
+    displayAnswer();
+  } else if (state === `end`) {
+    end();
+  }
+}
+
+/**
+
+*/
+function start() {
+  fill(255);
+  textSize(42);
+  textStyle(BOLD);
+  textAlign(CENTER);
+  text(
+    `The name of an animal will be said backwards.
+Guess what animal it is and say
+"I think it is ..." with your answer!`,
+    width / 2,
+    height / 3
+  );
+  fill(255, 255, 0);
+  text(`Click to start the game!`, width / 2, (height / 3) * 2);
 }
 
 /**
