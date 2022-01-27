@@ -145,14 +145,18 @@ const animals = [
 ];
 
 // state for starting, ending screens, and the game
-let state = `start`;
+let state = `start`; // start, game, end
 
-const QUESTION_DELAY = 2000; // in milliseconds
+const QUESTION_DELAY = 500; // (0.5 sec) in milliseconds
 
 // The current answer to display (we use it initially to display the click instruction)
 let currentAnswer = `Click to begin.`;
 // The current animal name the user is trying to guess
 let currentAnimal = ``;
+
+const NUM_QUESTIONS = 10;
+let numQuestionsAnswered = 0;
+let numRightAnswers = 0;
 
 /**
 Create a canvas
@@ -167,10 +171,12 @@ function setup() {
     // Create the guessing command
     let commands = {
       "I think it is *animal": guessAnimal,
+      Next: nextQuestion,
     };
     // Setup annyang and start
     annyang.addCommands(commands);
     annyang.start();
+    annyang.debug();
   }
 
   // Text defaults
@@ -189,7 +195,6 @@ function draw() {
     start();
   } else if (state === `game`) {
     game();
-    displayAnswer();
   } else if (state === `end`) {
     end();
   }
@@ -211,7 +216,28 @@ Guess what animal it is and say
     height / 3
   );
   fill(255, 255, 0);
-  text(`Click to start the game!`, width / 2, (height / 3) * 2);
+  text(`Click to begin`, width / 2, (height / 3) * 2);
+}
+
+function game() {
+  displayAnswer();
+}
+
+/**
+
+*/
+function end() {
+  fill(255);
+  textSize(42);
+  textStyle(BOLD);
+  textAlign(CENTER);
+  text(
+    `You got ${numRightAnswers} out of 10 animals right!`,
+    width / 2,
+    height / 3
+  );
+  fill(255, 0, 255);
+  text(`Click to try again!`, width / 2, (height / 3) * 2);
 }
 
 /**
@@ -221,9 +247,11 @@ Display the current answer in red if incorrect and green if correct
 function displayAnswer() {
   if (currentAnswer === currentAnimal) {
     fill(0, 255, 0);
+    numRightAnswers++;
   } else {
     fill(255, 0, 0);
   }
+  // numQuestionsAnswered++;
   text(currentAnswer, width / 2, height / 2);
 }
 
@@ -263,14 +291,36 @@ function guessAnimal(animal) {
 Reset the answer text, get a new random animal, say its name
 */
 function nextQuestion() {
+  if (state === `start`) {
+    state = `game`;
+  } else if (state === `game` && numQuestionsAnswered === NUM_QUESTIONS) {
+    state = `end`;
+  } else if (state === `end`) {
+    state = `start`;
+    numRightAnswers = 0;
+    numQuestionsAnswered = 0;
+  }
+
   currentAnswer = ``;
   currentAnimal = random(animals);
   sayAnimalBackwards(currentAnimal);
+  numQuestionsAnswered++;
 }
 
 /**
 When the user clicks, go to the next question
 */
 function mousePressed() {
-  nextQuestion();
+  // if (state === `start`) {
+  //   state = `game`;
+  //   // nextQuestion();
+  //   // } else if (state === `game` && numQuestionsAnswered < NUM_QUESTIONS) {
+  //   // nextQuestion();
+  // } else if (state === `game` && numQuestionsAnswered === NUM_QUESTIONS) {
+  //   state = `end`;
+  // } else if (state === `end`) {
+  //   state = `start`;
+  //   numRightAnswers = 0;
+  //   numQuestionsAnswered = 0;
+  // }
 }
