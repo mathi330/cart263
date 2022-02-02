@@ -9,6 +9,8 @@ let spyProfile = {
   name: `**REDACTED**`,
   alias: `**REDACTED**`,
   secretWeapon: `**REDACTED**`,
+  countryOfOperation: `**REDACTED**`,
+  battleCry: `**REDACTED**`,
   password: `**REDACTED**`,
 };
 
@@ -16,6 +18,8 @@ let data = undefined;
 
 let monsterData = undefined;
 let objectData = undefined;
+let countryData = undefined;
+let paintColorData = undefined;
 let tarotData = undefined;
 
 /**
@@ -28,6 +32,12 @@ function preload() {
 
   objectData = loadJSON(
     `https://raw.githubusercontent.com/dariusk/corpora/master/data/objects/objects.json`
+  );
+  countryData = loadJSON(
+    `https://raw.githubusercontent.com/dariusk/corpora/master/data/geography/countries.json`
+  );
+  paintColorData = loadJSON(
+    `https://raw.githubusercontent.com/dariusk/corpora/master/data/colors/paints.json`
   );
   tarotData = loadJSON(
     `https://raw.githubusercontent.com/dariusk/corpora/master/data/divination/tarot_interpretations.json`
@@ -67,6 +77,8 @@ function setSpyData() {
   spyProfile.name = data.name;
   spyProfile.alias = data.alias;
   spyProfile.secretWeapon = data.secretWeapon;
+  spyProfile.countryOfOperation = data.countryOfOperation;
+  spyProfile.battleCry = data.battleCry;
   spyProfile.password = data.password;
 }
 
@@ -76,11 +88,20 @@ generates the spy profile the first time the user visits the site
 function generateSpyProfile() {
   // asks for your name and stores it in the spyProfile object
   spyProfile.name = prompt(`What is your name, new recruit?`);
+
   // gives a random alias chosen from the monsters JSON file
   let monster = random(monsterData.names);
   spyProfile.alias = `The ${monster}`;
+
   // chooses a random "weapon" using the objects JSON file
   spyProfile.secretWeapon = random(objectData.objects);
+
+  // chooses a random country from the country JSON file
+  spyProfile.countryOfOperation = random(countryData.countries);
+
+  let paintColor = random(paintColorData.colors);
+  spyProfile.battleCry = paintColor.color;
+
   // chooses a random card of the tarot JSON file
   let card = random(tarotData.tarot_interpretations);
   // takes a random keyword from the chosen card
@@ -102,6 +123,9 @@ function draw() {
 Name: ${spyProfile.name}
 Alias: ${spyProfile.alias}
 Secret Weapon: ${spyProfile.secretWeapon}
+Country of Operation: ${spyProfile.countryOfOperation}
+Battle Cry: ${spyProfile.battleCry}
+
 Password: ${spyProfile.password}`;
 
   // text settings
@@ -121,5 +145,6 @@ deleting the profile when pressing backspace on keyboard
 function keyPressed() {
   if (keyCode === BACKSPACE) {
     localStorage.removeItem(`spy-profile-data`);
+    setup();
   }
 }
