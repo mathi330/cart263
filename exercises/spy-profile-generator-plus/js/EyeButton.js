@@ -39,17 +39,4 @@ class EyeButton {
     line(this.line.x1, this.line.y1, this.line.x2, this.line.y2);
     pop();
   }
-
-  /**
-  mousePressed()
-
-  sees if the mouse and the button overlap when clicking
-  */
-  mousePressed() {
-    if (this.overlap() && this.line.alpha === 0) {
-      this.line.alpha = 255;
-    } else if (this.overlap() && this.line.alpha !== 0) {
-      this.line.alpha = 0;
-    }
-  }
 }

@@ -11,12 +11,18 @@ let spyProfile = {
   secretWeapon: `**REDACTED**`,
   countryOfOperation: `**REDACTED**`,
   password: `**REDACTED**`,
-  visiblePassword: `*********`,
+  invisiblePassword: `**REDACTED**`,
+  visiblePassword: ``,
+  asterisk: `*`,
+
+  connected: false,
 };
 
+// image of the eye that shows wether the password is visible or not
 let imgEye = undefined;
 let eye = undefined;
 
+// The variable that contains the information of the profile
 let data = undefined;
 
 let monsterData = undefined;
@@ -69,7 +75,8 @@ function setup() {
     if (password === data.password) {
       // if yes, the data is displayed
       setSpyData();
-      spyProfile.visiblePassword = `*********`;
+      passwordLength();
+      spyProfile.visiblePassword = `${spyProfile.invisiblePassword}`;
     } // otherwise the data is not viewable
   }
   // if there is no info in the data
@@ -77,6 +84,21 @@ function setup() {
     // asks for your name to create a profile
     generateSpyProfile();
   }
+}
+
+/**
+function to count the length of the password and transform it into a hidden password
+*/
+function passwordLength() {
+  // empty the visible and hidden password variables
+  spyProfile.visiblePassword = ``;
+  spyProfile.invisiblePassword = ``;
+  // for loop to transform the visible password into a same number of asterisks
+  for (let i = 0; i < spyProfile.password.length; i++) {
+    spyProfile.invisiblePassword += spyProfile.asterisk; // add an asterisk for each letter
+  }
+  // make the thing you see as your password the hidden one
+  spyProfile.visiblePassword = `${spyProfile.invisiblePassword}`;
 }
 
 /**
@@ -140,30 +162,40 @@ Country of Operation: ${spyProfile.countryOfOperation}`;
   textFont(`Roboto Mono`); // font link in index
   textSize(20);
   textAlign(LEFT, TOP);
-  text(profile, 100, 100);
-  text(thePassword, 100, height - 100);
+  text(profile, 100, 100); // profile
+  text(thePassword, 100, height - 100); // password at the bottom of the page
   pop();
 
   eye.update();
 }
 
 /**
-deleting the profile when pressing backspace on keyboard
+deleting the profile when pressing BACKSPACE on keyboard
 */
 function keyPressed() {
   if (keyCode === BACKSPACE) {
     localStorage.removeItem(`spy-profile-data`);
     setup();
+    passwordLength();
   }
 }
 
+/**
+actions taken when the mouse is pressed
+*/
 function mousePressed() {
-  // eye.mousePressed();
+  // if the eye image is clicked and the eye is not crossed
   if (eye.overlap() && eye.line.alpha === 0) {
+    // make the line crossing the eye appear
     eye.line.alpha = 255;
+    // make the password visible
     spyProfile.visiblePassword = `${spyProfile.password}`;
-  } else if (eye.overlap() && eye.line.alpha !== 0) {
+  }
+  // if the eye image is pressed and the eye is crossed
+  else if (eye.overlap() && eye.line.alpha !== 0) {
+    // make the line crossing the eye disappear
     eye.line.alpha = 0;
-    spyProfile.visiblePassword = `*********`;
+    // make the password invisible
+    spyProfile.visiblePassword = `${spyProfile.invisiblePassword}`;
   }
 }
