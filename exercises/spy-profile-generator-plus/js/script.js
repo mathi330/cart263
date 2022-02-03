@@ -12,7 +12,11 @@ let spyProfile = {
   countryOfOperation: `**REDACTED**`,
   battleCry: `**REDACTED**`,
   password: `**REDACTED**`,
+  visiblePassword: undefined,
 };
+
+let imgEye = undefined;
+let eye = undefined;
 
 let data = undefined;
 
@@ -23,13 +27,15 @@ let paintColorData = undefined;
 let tarotData = undefined;
 
 /**
+preload the image of the eye (visibility of the password)
 preload the JSON files used in the program
 */
 function preload() {
+  imgEye = loadImage(`assets/images/eye.png`);
+
   monsterData = loadJSON(
     `https://raw.githubusercontent.com/dariusk/corpora/master/data/mythology/monsters.json`
   );
-
   objectData = loadJSON(
     `https://raw.githubusercontent.com/dariusk/corpora/master/data/objects/objects.json`
   );
@@ -50,6 +56,9 @@ if a profile already exists, it asks the password and if not it asks for your na
 */
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  imageMode(CENTER);
+
+  eye = new EyeButton(imgEye);
 
   // destringify the object
   data = JSON.parse(localStorage.getItem(`spy-profile-data`));
@@ -61,6 +70,7 @@ function setup() {
     if (password === data.password) {
       // if yes, the data is displayed
       setSpyData();
+      spyProfile.visiblePassword = `*********`;
     } // otherwise the data is not viewable
   }
   // if there is no info in the data
@@ -115,7 +125,7 @@ function generateSpyProfile() {
 Description of draw()
 */
 function draw() {
-  background(0); // black
+  background(255); // white
 
   // text displayed
   let profile = `** SPY PROFILE **
@@ -124,19 +134,21 @@ Name: ${spyProfile.name}
 Alias: ${spyProfile.alias}
 Secret Weapon: ${spyProfile.secretWeapon}
 Country of Operation: ${spyProfile.countryOfOperation}
-Battle Cry: ${spyProfile.battleCry}
-
-Password: ${spyProfile.password}`;
+Battle Cry: ${spyProfile.battleCry}`;
+  let thePassword = `Password: ${spyProfile.visiblePassword}`;
 
   // text settings
   push();
-  fill(255);
+  fill(0);
   textStyle(BOLD);
   textFont(`Roboto Mono`); // font link in index
   textSize(20);
   textAlign(LEFT, TOP);
   text(profile, 100, 100);
+  text(thePassword, 100, height - 100);
   pop();
+
+  eye.update();
 }
 
 /**
@@ -146,5 +158,16 @@ function keyPressed() {
   if (keyCode === BACKSPACE) {
     localStorage.removeItem(`spy-profile-data`);
     setup();
+  }
+}
+
+function mousePressed() {
+  // eye.mousePressed();
+  if (eye.overlap() && eye.line.alpha === 0) {
+    eye.line.alpha = 255;
+    spyProfile.visiblePassword = `${spyProfile.password}`;
+  } else if (eye.overlap() && eye.line.alpha !== 0) {
+    eye.line.alpha = 0;
+    spyProfile.visiblePassword = `*********`;
   }
 }
