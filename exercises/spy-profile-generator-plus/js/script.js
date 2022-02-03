@@ -12,6 +12,7 @@ let spyProfile = {
   alias: `**REDACTED**`,
   secretWeapon: `**REDACTED**`,
   countryOfOperation: `**REDACTED**`,
+  favFood: `**REDACTED**`,
   password: `**REDACTED**`,
   invisiblePassword: `**REDACTED**`,
   visiblePassword: ``,
@@ -29,11 +30,16 @@ let imgStampTopSecret = undefined;
 // The variable that contains the information of the profile
 let data = undefined;
 
+let paintColorData = undefined;
 let monsterData = undefined;
 let objectData = undefined;
 let countryData = undefined;
-let paintColorData = undefined;
+let toxicChemicals = undefined;
 let tarotData = undefined;
+
+//
+let paintColor = undefined;
+let monster = undefined;
 
 /**
 preload the image of the eye (visibility of the password)
@@ -43,6 +49,9 @@ function preload() {
   imgEye = loadImage(`assets/images/eye.png`);
   imgStampTopSecret = loadImage(`assets/images/stamp-secret.png`);
 
+  paintColorData = loadJSON(
+    `https://raw.githubusercontent.com/dariusk/corpora/master/data/colors/paints.json`
+  );
   monsterData = loadJSON(
     `https://raw.githubusercontent.com/dariusk/corpora/master/data/mythology/monsters.json`
   );
@@ -52,8 +61,9 @@ function preload() {
   countryData = loadJSON(
     `https://raw.githubusercontent.com/dariusk/corpora/master/data/geography/countries.json`
   );
-  paintColorData = loadJSON(
-    `https://raw.githubusercontent.com/dariusk/corpora/master/data/colors/paints.json`
+
+  toxicChemicals = loadJSON(
+    `https://raw.githubusercontent.com/dariusk/corpora/master/data/science/toxic_chemicals.json`
   );
   tarotData = loadJSON(
     `https://raw.githubusercontent.com/dariusk/corpora/master/data/divination/tarot_interpretations.json`
@@ -124,6 +134,7 @@ function setSpyData() {
   spyProfile.alias = data.alias;
   spyProfile.secretWeapon = data.secretWeapon;
   spyProfile.countryOfOperation = data.countryOfOperation;
+  spyProfile.favFood = data.favFood;
   spyProfile.password = data.password;
 }
 
@@ -135,9 +146,9 @@ function generateSpyProfile() {
   spyProfile.name = prompt(`What is your name, new recruit?`);
 
   // chooses a name of color from the paint color names JSON file
-  let paintColor = random(paintColorData.colors);
+  paintColor = random(paintColorData.colors);
   // chooses a monster from the monsters JSON file
-  let monster = random(monsterData.names);
+  monster = random(monsterData.names);
   spyProfile.alias = `The ${paintColor.color} ${monster}`;
 
   // chooses a random "weapon" using the objects JSON file
@@ -145,6 +156,9 @@ function generateSpyProfile() {
 
   // chooses a random country from the country JSON file
   spyProfile.countryOfOperation = random(countryData.countries);
+
+  // chooses a random chemical from the chemicals JSON file
+  spyProfile.favFood = random(toxicChemicals.chemicals);
 
   // chooses a random card of the tarot JSON file
   let card = random(tarotData.tarot_interpretations);
@@ -235,10 +249,16 @@ function instructionsRight() {
   text(
     `Press BACKSPACE to delete your account.
 
-Press something...
+Press F to change the first part of your Alias,
+and S to change the second part.
+Press A to change your Alias.
+
+Press W to change your Weapon.
+Press C to change your Country of Operation.
+Press O to change your Favourite Food.
 `,
     width / 2 + 50,
-    100
+    height / 2.5
   );
   pop();
 }
@@ -253,7 +273,9 @@ function profileInformation() {
 NAME: ${spyProfile.name}
 ALIAS: ${spyProfile.alias}
 SECRET WEAPON: ${spyProfile.secretWeapon}
-COUNTRY OF OPERATION: ${spyProfile.countryOfOperation}`;
+COUNTRY OF OPERATION: ${spyProfile.countryOfOperation}
+FAVOURITE FOOD: ${spyProfile.favFood}`;
+
   let thePassword = `PASSWORD: ${spyProfile.visiblePassword}`;
 
   // text settings
@@ -289,15 +311,37 @@ function keyPressed() {
   // click A to change your alias
   else if (key === `a` && state === `profile`) {
     // chooses a name of color from the paint color names JSON file
-    let paintColor = random(paintColorData.colors);
+    paintColor = random(paintColorData.colors);
     // chooses a monster from the monsters JSON file
-    let monster = random(monsterData.names);
+    monster = random(monsterData.names);
+    spyProfile.alias = `The ${paintColor.color} ${monster}`;
+  }
+  // click F to change the first part of your alias
+  else if (key === `f` && state === `profile`) {
+    // chooses a name of color from the paint color names JSON file
+    paintColor = random(paintColorData.colors);
+    spyProfile.alias = `The ${paintColor.color} ${monster}`;
+  }
+  // click S to change the second part of your alias
+  else if (key === `s` && state === `profile`) {
+    // chooses a monster from the monsters JSON file
+    monster = random(monsterData.names);
     spyProfile.alias = `The ${paintColor.color} ${monster}`;
   }
   // click W to change your weapon
   else if (key === `w` && state === `profile`) {
     // chooses a random "weapon" using the objects JSON file
-    spyProfile.secretWeapon = random(objectData.objects);
+    spyProfile.secretWeapon = `${random(objectData.objects)}`;
+  }
+  // click C to change the country of operation
+  else if (key === `c` && state === `profile`) {
+    // chooses a random country from the country JSON file
+    spyProfile.countryOfOperation = `${random(countryData.countries)}`;
+  }
+  // click O to change your favourite food
+  else if (key === `o` && state === `profile`) {
+    // chooses a random chemical from the chemicals JSON file
+    spyProfile.favFood = `${random(toxicChemicals.chemicals)}`;
   }
 }
 
