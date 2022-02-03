@@ -99,9 +99,11 @@ function generateSpyProfile() {
   // asks for your name and stores it in the spyProfile object
   spyProfile.name = prompt(`What is your name, new recruit?`);
 
-  // gives a random alias chosen from the monsters JSON file
+  // chooses a name of color from the paint color names JSON file
+  let paintColor = random(paintColorData.colors);
+  // chooses a monster from the monsters JSON file
   let monster = random(monsterData.names);
-  spyProfile.alias = `The ${monster}`;
+  spyProfile.alias = `The ${paintColor.color} ${monster}`;
 
   // chooses a random "weapon" using the objects JSON file
   spyProfile.secretWeapon = random(objectData.objects);
@@ -109,8 +111,8 @@ function generateSpyProfile() {
   // chooses a random country from the country JSON file
   spyProfile.countryOfOperation = random(countryData.countries);
 
-  let paintColor = random(paintColorData.colors);
-  spyProfile.battleCry = paintColor.color;
+  // let paintColor = random(paintColorData.colors);
+  // spyProfile.battleCry = paintColor.color;
 
   // chooses a random card of the tarot JSON file
   let card = random(tarotData.tarot_interpretations);
@@ -133,8 +135,8 @@ function draw() {
 Name: ${spyProfile.name}
 Alias: ${spyProfile.alias}
 Secret Weapon: ${spyProfile.secretWeapon}
-Country of Operation: ${spyProfile.countryOfOperation}
-Battle Cry: ${spyProfile.battleCry}`;
+Country of Operation: ${spyProfile.countryOfOperation}`;
+  //Battle Cry: ${spyProfile.battleCry}
   let thePassword = `Password: ${spyProfile.visiblePassword}`;
 
   // text settings
