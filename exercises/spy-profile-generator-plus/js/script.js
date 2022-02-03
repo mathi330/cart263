@@ -10,9 +10,8 @@ let spyProfile = {
   alias: `**REDACTED**`,
   secretWeapon: `**REDACTED**`,
   countryOfOperation: `**REDACTED**`,
-  battleCry: `**REDACTED**`,
   password: `**REDACTED**`,
-  visiblePassword: undefined,
+  visiblePassword: `*********`,
 };
 
 let imgEye = undefined;
@@ -88,7 +87,6 @@ function setSpyData() {
   spyProfile.alias = data.alias;
   spyProfile.secretWeapon = data.secretWeapon;
   spyProfile.countryOfOperation = data.countryOfOperation;
-  spyProfile.battleCry = data.battleCry;
   spyProfile.password = data.password;
 }
 
@@ -110,9 +108,6 @@ function generateSpyProfile() {
 
   // chooses a random country from the country JSON file
   spyProfile.countryOfOperation = random(countryData.countries);
-
-  // let paintColor = random(paintColorData.colors);
-  // spyProfile.battleCry = paintColor.color;
 
   // chooses a random card of the tarot JSON file
   let card = random(tarotData.tarot_interpretations);
@@ -136,7 +131,6 @@ Name: ${spyProfile.name}
 Alias: ${spyProfile.alias}
 Secret Weapon: ${spyProfile.secretWeapon}
 Country of Operation: ${spyProfile.countryOfOperation}`;
-  //Battle Cry: ${spyProfile.battleCry}
   let thePassword = `Password: ${spyProfile.visiblePassword}`;
 
   // text settings
