@@ -17,8 +17,6 @@ let spyProfile = {
   invisiblePassword: `**REDACTED**`,
   visiblePassword: ``,
   asterisk: `*`,
-
-  connected: false,
 };
 
 // image of the eye that shows wether the password is visible or not
@@ -100,6 +98,7 @@ function setup() {
   else {
     // asks for your name to create a profile
     generateSpyProfile();
+    passwordLength();
   }
 }
 
