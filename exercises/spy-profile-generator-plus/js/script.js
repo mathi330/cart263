@@ -220,14 +220,10 @@ function instructionsWrong() {
   textFont(`Roboto Mono`); // font link in index
   textSize(20);
   textAlign(LEFT, TOP);
-  text(
-    `Press BACKSPACE to delete your account.
+  text(`Press TAB to try another password.`, width / 2 + 50, 100);
 
-Press TAB to go back to the password.
-`,
-    width / 2 + 50,
-    100
-  );
+  fill(255, 0, 0);
+  text(`Press BACKSPACE to delete your account.`, width / 2 + 50, height - 100);
   pop();
 }
 
@@ -246,19 +242,25 @@ function instructionsRight() {
   textSize(20);
   textAlign(LEFT, TOP);
   text(
-    `Press BACKSPACE to delete your account.
+    `Press F to randomly change the first part of your Alias,
+and S to randomly change the second part.
+Press A to randomly change your Alias.
+Press W to randomly change your Weapon.
+Press C to randomly change your Country of Operation.
+Press O to randomly change your Favourite Food.
 
-Press F to change the first part of your Alias,
-and S to change the second part.
-Press A to change your Alias.
 
-Press W to change your Weapon.
-Press C to change your Country of Operation.
-Press O to change your Favourite Food.
+
+Press 1 to type a new Alias.
+Press 2 to type a new Weapon.
+Press 3 to type a new Country of Operation.
+Press 4 to type a new Favourite Food.
 `,
-    width / 2 + 50,
-    height / 2.5
+    width / 2 + 20,
+    100
   );
+  fill(255, 0, 0);
+  text(`Press BACKSPACE to delete your account.`, width / 2 + 20, height - 100);
   pop();
 }
 
@@ -268,6 +270,7 @@ profile information (left side of the canvas)
 function profileInformation() {
   // text displayed
   let profile = `** SPY PROFILE **
+
 
 NAME: ${spyProfile.name}
 ALIAS: ${spyProfile.alias}
@@ -284,8 +287,8 @@ FAVOURITE FOOD: ${spyProfile.favFood}`;
   textFont(`Roboto Mono`); // font link in index
   textSize(20);
   textAlign(LEFT, TOP);
-  text(profile, 100, 100); // profile
-  text(thePassword, 100, height - 100); // password at the bottom of the page
+  text(profile, 20, 100); // profile
+  text(thePassword, 20, height - 100); // password at the bottom of the page
   pop();
 }
 
@@ -307,6 +310,7 @@ function keyPressed() {
     setup(); // Go back to setup (to ask the password)
   }
 
+  // RANDOMLY CHOOSE SOMETHING
   // click A to change your alias
   else if (key === `a` && state === `profile`) {
     // chooses a name of color from the paint color names JSON file
@@ -314,33 +318,73 @@ function keyPressed() {
     // chooses a monster from the monsters JSON file
     monster = random(monsterData.names);
     spyProfile.alias = `The ${paintColor.color} ${monster}`;
+    // save the new change
+    localStorage.setItem(`spy-profile-data`, JSON.stringify(spyProfile));
   }
   // click F to change the first part of your alias
   else if (key === `f` && state === `profile`) {
     // chooses a name of color from the paint color names JSON file
     paintColor = random(paintColorData.colors);
     spyProfile.alias = `The ${paintColor.color} ${monster}`;
+    // save the new change
+    localStorage.setItem(`spy-profile-data`, JSON.stringify(spyProfile));
   }
   // click S to change the second part of your alias
   else if (key === `s` && state === `profile`) {
     // chooses a monster from the monsters JSON file
     monster = random(monsterData.names);
     spyProfile.alias = `The ${paintColor.color} ${monster}`;
+    // save the new change
+    localStorage.setItem(`spy-profile-data`, JSON.stringify(spyProfile));
   }
   // click W to change your weapon
   else if (key === `w` && state === `profile`) {
     // chooses a random "weapon" using the objects JSON file
     spyProfile.secretWeapon = `${random(objectData.objects)}`;
+    // save the new change
+    localStorage.setItem(`spy-profile-data`, JSON.stringify(spyProfile));
   }
   // click C to change the country of operation
   else if (key === `c` && state === `profile`) {
     // chooses a random country from the country JSON file
     spyProfile.countryOfOperation = `${random(countryData.countries)}`;
+    // save the new change
+    localStorage.setItem(`spy-profile-data`, JSON.stringify(spyProfile));
   }
   // click O to change your favourite food
   else if (key === `o` && state === `profile`) {
     // chooses a random chemical from the chemicals JSON file
     spyProfile.favFood = `${random(toxicChemicals.chemicals)}`;
+    // save the new change
+    localStorage.setItem(`spy-profile-data`, JSON.stringify(spyProfile));
+  }
+
+  // DECIDE A NEW SOMETHING
+  // click 1 to change your alias
+  if (keyCode === 49 && state === `profile`) {
+    spyProfile.alias = prompt(`Type in a new Alias`);
+    // save the new change
+    localStorage.setItem(`spy-profile-data`, JSON.stringify(spyProfile));
+  }
+  // click 2 to change your weapon
+  else if (keyCode === 50 && state === `profile`) {
+    spyProfile.secretWeapon = prompt(`Type in a new Weapon`);
+    // save the new change
+    localStorage.setItem(`spy-profile-data`, JSON.stringify(spyProfile));
+  }
+  // click 3 to change your country
+  else if (keyCode === 51 && state === `profile`) {
+    spyProfile.countryOfOperation = prompt(
+      `Type in a new Country of Operation`
+    );
+    // save the new change
+    localStorage.setItem(`spy-profile-data`, JSON.stringify(spyProfile));
+  }
+  // click 4 to change your fav food
+  else if (keyCode === 52 && state === `profile`) {
+    spyProfile.favFood = prompt(`Type in a new Favourite Food`);
+    // save the new change
+    localStorage.setItem(`spy-profile-data`, JSON.stringify(spyProfile));
   }
 }
 
