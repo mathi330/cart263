@@ -299,10 +299,13 @@ re-ask for password when pressing TAB
 function keyPressed() {
   // click BACKSPACE to delete profile
   if (keyCode === BACKSPACE) {
-    state = `profile`; // set state to profile
-    localStorage.removeItem(`spy-profile-data`); // empty all the data saved
-    setup(); // Go back to setup (to ask for your name)
-    passwordLength(); // empty the hidden password string and create a new one for the new password
+    // Add a confirm button to make sure the profile is not accidently deleted
+    if (confirm(`Agent! Are you sure about your resignation?!`)) {
+      state = `profile`; // set state to profile
+      localStorage.removeItem(`spy-profile-data`); // empty all the data saved
+      setup(); // Go back to setup (to ask for your name)
+      passwordLength(); // empty the hidden password string and create a new one for the new password
+    }
   }
   // click TAB to re-ask your password if you got it wrong
   else if (keyCode === TAB && state === `redacted`) {
