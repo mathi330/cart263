@@ -1,7 +1,11 @@
-# Template p5 project
+# Spy Profile
 
-This is the README file for the entire project. For more official projects you should write information here about the nature of the project, your name, any special explanations of how the project works, etc.
+by Mathilde Davan
 
+This program is a spy profile generator. It creates a profile after the user entered their name. Once they have a profile, they can make changes, either through the generation of new random information or by manually changing and inputting something they want. They can also delete their profile and create a new one. When they come back, the program remembers them and asks for the password they were given when they first created their profile. If the password is right it goes to their profile, else they arrive on another page without their information and with the possibility to try the password
+again or delete the profile.
+
+Resources:
 image of eye:
 https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimage.flaticon.com%2Ficons%2Fpng%2F512%2F37%2F37090.png&f=1&nofb=1
 

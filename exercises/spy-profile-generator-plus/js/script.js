@@ -1,33 +1,38 @@
 /**
 Spy Profile Generator
 Mathilde Davan
+
+This program is a spy profile generator that generates a spy profile that the user can then
+modify.
 */
 
 "use strict";
 
 let state = `profile`; // profile, redacted
 
+// spy profile object
 let spyProfile = {
   name: `**REDACTED**`,
   alias: `**REDACTED**`,
   secretWeapon: `**REDACTED**`,
   countryOfOperation: `**REDACTED**`,
   favFood: `**REDACTED**`,
-  password: `**REDACTED**`,
-  invisiblePassword: `**REDACTED**`,
-  visiblePassword: ``,
-  asterisk: `*`,
+  password: `**REDACTED**`, // word
+  invisiblePassword: `**REDACTED**`, // a string of asterisks
+  visiblePassword: ``, // what you see next to the "PASSWORD:" (the actual password or the hidden version)
+  asterisk: `*`, // used to create the spyProfile.invisiblePassword
 };
 
 // image of the eye that shows wether the password is visible or not
 let imgEye = undefined;
 let eye = undefined;
-
+// image of the top-secret stamp
 let imgStampTopSecret = undefined;
 
 // The variable that contains the information of the profile
 let data = undefined;
 
+// variable to preload JSON files
 let paintColorData = undefined;
 let monsterData = undefined;
 let objectData = undefined;
@@ -35,9 +40,8 @@ let countryData = undefined;
 let toxicChemicals = undefined;
 let tarotData = undefined;
 
-//
-let paintColor = undefined;
-let monster = undefined;
+let paintColor = `undefined`;
+let monster = `carrot`;
 
 /**
 preload the image of the eye (visibility of the password)
@@ -103,10 +107,12 @@ function setup() {
 }
 
 /**
+profile setup for the display with hidden password
  */
 function profileSession() {
   setSpyData();
   passwordLength();
+  // make the password in its hidden form
   spyProfile.visiblePassword = `${spyProfile.invisiblePassword}`;
 }
 
@@ -164,70 +170,33 @@ function generateSpyProfile() {
   // takes a random keyword from the chosen card
   spyProfile.password = random(card.keywords);
 
-  // stringify the object
+  // stringify the object and saves it
   localStorage.setItem(`spy-profile-data`, JSON.stringify(spyProfile));
 }
 
 /**
-Description of draw()
+display the content of the canvas depending on the state
 */
 function draw() {
+  background(200); // light grey
+
+  // if the password is correct
   if (state === `profile`) {
     rightPassword();
-    instructionsRight();
-  } else if (state === `redacted`) {
+  }
+  // if the password is wrong
+  else if (state === `redacted`) {
     wrongPassword();
-    instructionsWrong();
   }
 }
 
 /**
-the visible profile when the password is right
+info that appears if the password is correct
 */
 function rightPassword() {
-  background(200);
-
   profileInformation();
-  eye.update();
-}
+  eye.update(); // display the image of the eye
 
-/**
-what appears if you enter the wrong password
- */
-function wrongPassword() {
-  background(200);
-
-  push();
-  translate(width / 4, height / 2);
-  rotate(-0.3);
-  image(imgStampTopSecret, 0, 0, width / 2, width / 2);
-  pop();
-}
-
-/**
- */
-function instructionsWrong() {
-  // line separating the canvas in 2 equal parts
-  push();
-  stroke(50);
-  line(width / 2, 50, width / 2, height - 50);
-  pop();
-
-  // text settings
-  push();
-  fill(50);
-  textStyle(BOLD);
-  textFont(`Roboto Mono`); // font link in index
-  textSize(20);
-  textAlign(LEFT, TOP);
-  text(`Press TAB to try another password.`, width / 2 + 50, 100);
-
-  fill(255, 0, 0);
-  text(`Press BACKSPACE to delete your account.`, width / 2 + 50, height - 100);
-  pop();
-}
-
-function instructionsRight() {
   // line separating the canvas in 2 equal parts
   push();
   stroke(50);
@@ -259,13 +228,44 @@ Press 4 to type a new Favourite Food.
     width / 2 + 20,
     100
   );
-  fill(255, 0, 0);
+  fill(255, 0, 0); // red
   text(`Press BACKSPACE to delete your account.`, width / 2 + 20, height - 100);
   pop();
 }
 
 /**
-profile information (left side of the canvas)
+info that appears if the password is wrong
+ */
+function wrongPassword() {
+  // image of top-secret stamp
+  push();
+  translate(width / 4, height / 2); // on the left of the canvas
+  rotate(-0.3); // tilted left
+  image(imgStampTopSecret, 0, 0, width / 2, width / 2);
+  pop();
+
+  // line separating the canvas in 2
+  push();
+  stroke(50);
+  line(width / 2, 50, width / 2, height - 50);
+  pop();
+
+  // text settings
+  push();
+  fill(50);
+  textStyle(BOLD);
+  textFont(`Roboto Mono`); // font link in index
+  textSize(20);
+  textAlign(LEFT, TOP);
+  text(`Press TAB to try another password.`, width / 2 + 50, 100);
+
+  fill(255, 0, 0);
+  text(`Press BACKSPACE to delete your account.`, width / 2 + 50, height - 100);
+  pop();
+}
+
+/**
+display profile information (left side of the canvas)
 */
 function profileInformation() {
   // text displayed
