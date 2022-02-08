@@ -7,6 +7,9 @@ A program to pop bubbles with our finger.
 
 "use strict";
 
+// current state of the program
+let state = `loading`; // loading and running
+
 // the user's webcam
 let video = undefined;
 // handpose models
@@ -34,7 +37,8 @@ function setup() {
       flipHorizontal: true,
     },
     function () {
-      console.log(`Model loaded.`);
+      state = `running`;
+      // console.log(`Model loaded.`);
     }
   );
 
@@ -58,6 +62,31 @@ function setup() {
 Description of draw()
 */
 function draw() {
+  if (state === `loading`) {
+    loading();
+  } else if (state === `running`) {
+    running();
+  }
+}
+
+/**
+Display a text saying that the program is loading
+*/
+function loading() {
+  background(255);
+
+  push();
+  textSize(25);
+  textStyle(BOLD);
+  textAlign(CENTER, CENTER);
+  text(`Loading...`, width / 2, height / 2);
+  pop();
+}
+
+/**
+Display what happens when the program is running 
+*/
+function running() {
   background(0);
 
   if (prediction.length > 0) {
