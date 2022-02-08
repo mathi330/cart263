@@ -84,28 +84,12 @@ function loading() {
 }
 
 /**
-Display what happens when the program is running 
+Display what happens when the program is running
 */
 function running() {
   background(0);
 
-  if (prediction.length > 0) {
-    let hand = prediction[0];
-    let index = hand.annotations.indexFinger;
-    let tipX = index[3][0];
-    let tipY = index[3][1];
-    let baseX = index[0][0];
-    let baseY = index[0][1];
-
-    displayPin(baseX, baseY, tipX, tipY);
-
-    // check bubble popping
-    let d = dist(tipX, tipY, bubble.x, bubble.y);
-    // if the tip of the pin is inside the bubble, reset the bubble
-    if (d < bubble.size / 2) {
-      resetBubble();
-    }
-  }
+  ifHandDetected();
 
   bubble.x += bubble.vx;
   bubble.y += bubble.vy;
@@ -118,6 +102,74 @@ function running() {
   displayBubble();
 }
 
+function ifHandDetected() {
+  // if the AI detects a hand
+  if (prediction.length > 0) {
+    let hand = prediction[0].annotations;
+    // array with all the points of the hand
+    let pointsOfHand = [
+      [
+        [hand.thumb[3][0], hand.thumb[3][1]],
+        [hand.thumb[0][0], hand.thumb[0][1]],
+      ],
+
+      [
+        [hand.indexFinger[3][0], hand.indexFinger[3][1]],
+        [hand.indexFinger[0][0], hand.indexFinger[0][1]],
+      ],
+
+      [
+        [hand.middleFinger[3][0], hand.middleFinger[3][1]],
+        [hand.middleFinger[0][0], hand.middleFinger[0][1]],
+      ],
+
+      [
+        [hand.ringFinger[3][0], hand.ringFinger[3][1]],
+        [hand.ringFinger[0][0], hand.ringFinger[0][1]],
+      ],
+
+      [
+        [hand.pinky[3][0], hand.pinky[3][1]],
+        [hand.pinky[0][0], hand.pinky[0][1]],
+      ],
+
+      [[], [hand.palmBase[0][0], hand.palmBase[0][1]]],
+    ];
+
+    // display the points of the hand and make them pop bubbles when they touch them
+    for (let i = 0; i < pointsOfHand.length; i++) {
+      for (let j = 0; j < pointsOfHand[i].length; j++) {
+        displayFinger(pointsOfHand[i][j][0], pointsOfHand[i][j][1]);
+        distFingerBubble(pointsOfHand[i][j][0], pointsOfHand[i][j][1]);
+      }
+    }
+
+    // display the lines of the hand
+    for (let i = 0; i < pointsOfHand.length; i++) {
+      // lines for fingers
+      displayHand(
+        pointsOfHand[i][0][0],
+        pointsOfHand[i][0][1],
+        pointsOfHand[i][1][0],
+        pointsOfHand[i][1][1]
+      );
+
+      // lines for the palm of the hand
+      let pointAfterI = i;
+      pointAfterI++;
+      if (pointAfterI === pointsOfHand.length) {
+        pointAfterI = 0;
+      }
+      displayHand(
+        pointsOfHand[i][1][0],
+        pointsOfHand[i][1][1],
+        pointsOfHand[pointAfterI][1][0],
+        pointsOfHand[pointAfterI][1][1]
+      );
+    }
+  }
+}
+
 /**
 reset the bubble's x and y coordinates (x random and y at the bottom of the canvas)
 */
@@ -126,22 +178,34 @@ function resetBubble() {
   bubble.y = height + bubble.size / 2;
 }
 
-/**
-display the pin as a white line and a red circle for the head
-*/
-function displayPin(baseX, baseY, tipX, tipY) {
-  // the pin
-  push();
-  strokeWeight(2);
-  stroke(255);
-  line(baseX, baseY, tipX, tipY);
-  pop();
+function distFingerBubble(tipX, tipY) {
+  // measure distance between the tip of a finger and the center of the bubble
+  let d = dist(tipX, tipY, bubble.x, bubble.y);
+  // if the tip of the pin is inside the bubble, reset the bubble
+  if (d < bubble.size / 2) {
+    resetBubble();
+  }
+}
 
-  // the pin head
+/**
+display the tip of all fingers
+*/
+function displayFinger(x, y) {
   push();
   noStroke();
   fill(255, 0, 0);
-  ellipse(baseX, baseY, 15);
+  ellipse(x, y, 10);
+  pop();
+}
+
+/**
+display the lines showing the hand
+*/
+function displayHand(x1, y1, x2, y2) {
+  push();
+  strokeWeight(2);
+  stroke(255, 0, 0);
+  line(x1, y1, x2, y2);
   pop();
 }
 
