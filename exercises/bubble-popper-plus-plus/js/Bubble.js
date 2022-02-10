@@ -41,11 +41,11 @@ class Bubble {
   }
 
   /**
-  display a purple-ish circle for the bubble
+  display a circle for the bubble
   */
   displayBubble() {
     push();
-    fill(this.fillColor, this.alpha);
+    fill(this.fillColor, this.alpha); // chosen color from the fillOptions
     noStroke();
     ellipse(this.x, this.y, this.size);
     pop();
@@ -59,6 +59,9 @@ class Bubble {
     this.y = height + this.size / 2;
   }
 
+  /**
+  measures the distance between the points of the hand and the bubble
+  */
   distFingerBubble(tipX, tipY) {
     // measure distance between a point of the hand and the center of the bubble
     let d = dist(tipX, tipY, this.x, this.y);

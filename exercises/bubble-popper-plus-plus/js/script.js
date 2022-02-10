@@ -3,7 +3,7 @@ Bubble Popper
 Mathilde Davan
 
 This program is a playful code where the user can pop colorful bubbles by moving their
-hand.
+hand and create new bubbles when they close their hands.
 */
 
 "use strict";
@@ -22,11 +22,12 @@ let prediction = [];
 let bubbles = [];
 let numBubbles = 1;
 
+// the mini bubbles/confetti when you pop a big bubble
 let miniBubbles = [];
 let numMiniBubbles = 100;
 
 /**
-Description of setup
+setup the video, ml5 and handpose, and the bubbles to pop
 */
 function setup() {
   createCanvas(640, 480);
@@ -43,7 +44,6 @@ function setup() {
     },
     function () {
       state = `running`;
-      // console.log(`Model loaded.`);
     }
   );
 
@@ -53,6 +53,7 @@ function setup() {
     prediction = results;
   });
 
+  // create the bubbles with the Bubble object
   for (let i = 0; i < numBubbles; i++) {
     let bubble = new Bubble();
     bubbles.push(bubble);

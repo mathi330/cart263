@@ -34,7 +34,7 @@ class MiniBubble {
   */
   display() {
     push();
-    fill(this.fillColor);
+    fill(this.fillColor); // chosen color from the fillOptions
     noStroke();
     ellipse(this.x, this.y, this.size);
     pop();
