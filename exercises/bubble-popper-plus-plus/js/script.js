@@ -2,7 +2,8 @@
 Bubble Popper
 Mathilde Davan
 
-
+This program is a playful code where the user can pop colorful bubbles by moving their
+hand.
 */
 
 "use strict";
@@ -172,17 +173,19 @@ function handCreation(hand) {
             pointsOfHand[i][j][1]
           )
         ) {
+          // create mini bubbles with the object
           for (let i = 0; i < numMiniBubbles; i++) {
             let mini = new MiniBubble();
-            miniBubbles.push(mini);
+            miniBubbles.push(mini); // push them in an array
           }
 
+          // display the mini bubbles
           for (let i = 0; i < miniBubbles.length; i++) {
             miniBubbles[i].display();
             miniBubbles[i].move();
           }
-          bubbles.splice(h, 1);
-          miniBubbles = [];
+          bubbles.splice(h, 1); // destroy the bubble
+          miniBubbles = []; // empty the mini bubbles' array
         }
       }
     }

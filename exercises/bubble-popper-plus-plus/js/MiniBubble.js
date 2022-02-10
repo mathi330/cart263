@@ -1,3 +1,6 @@
+/**
+Small circles reminding confetti that appear when a bubble is popped
+*/
 class MiniBubble {
   constructor() {
     this.x = random(width);
@@ -7,6 +10,7 @@ class MiniBubble {
     this.vy = -15;
 
     this.alpha = 100;
+    // possible colors for the bubbles
     this.fillOptions = [
       color(255, 99, 214, this.alpha),
       color(0, 12, 255, this.alpha),
@@ -17,12 +21,17 @@ class MiniBubble {
     this.fillColor = random(this.fillOptions);
   }
 
+  /**
+  Move the bubbles up with a small angle
+  */
   move() {
-    // move bubble
     this.x += this.vx;
     this.y += this.vy;
   }
 
+  /**
+  Display the small bubbles
+  */
   display() {
     push();
     fill(this.fillColor);
