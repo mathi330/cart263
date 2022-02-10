@@ -2,12 +2,19 @@ class Bubble {
   constructor(colors) {
     this.x = random(width);
     this.y = height;
-    this.size = random(80, 100);
+    this.size = random(50, 200);
     this.vx = 0;
     this.vy = -2;
 
-    this.fillOptions = colors;
-    this.alpha = 150;
+    this.alpha = 100;
+    this.fillOptions = [
+      color(255, 99, 214, this.alpha),
+      color(0, 12, 255, this.alpha),
+      color(255, 247, 0, this.alpha),
+      color(88, 255, 99, this.alpha),
+      color(255, 72, 30, this.alpha),
+    ];
+    this.fillColor = random(this.fillOptions);
   }
 
   move() {
@@ -31,7 +38,7 @@ class Bubble {
   */
   displayBubble() {
     push();
-    fill(this.fillOptions, this.alpha);
+    fill(this.fillColor, this.alpha);
     noStroke();
     ellipse(this.x, this.y, this.size);
     pop();

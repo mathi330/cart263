@@ -50,14 +50,7 @@ function setup() {
   });
 
   for (let i = 0; i < numBubbles; i++) {
-    let fillOptions = [
-      p.color(255, 99, 214, alphaValue),
-      p.color(0, 12, 255, alphaValue),
-      p.color(255, 247, 0, alphaValue),
-      p.color(88, 255, 99, alphaValue),
-      p.color(255, 72, 30, alphaValue),
-    ];
-    let bubble = new Bubble(fillOptions);
+    let bubble = new Bubble();
     bubbles.push(bubble);
   }
 }
