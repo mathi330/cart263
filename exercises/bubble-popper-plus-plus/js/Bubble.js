@@ -1,10 +1,10 @@
 class Bubble {
-  constructor(colors) {
+  constructor() {
     this.x = random(width);
     this.y = height;
     this.size = random(50, 200);
     this.vx = 0;
-    this.vy = -2;
+    this.vy = random(-5, -1);
 
     this.alpha = 100;
     this.fillOptions = [
