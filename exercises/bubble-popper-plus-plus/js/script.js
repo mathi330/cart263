@@ -2,7 +2,7 @@
 Bubble Popper
 Mathilde Davan
 
-A program to pop bubbles with our finger.
+
 */
 
 "use strict";
@@ -18,7 +18,8 @@ let handpose = undefined;
 let prediction = [];
 
 // the bubble
-let bubble = undefined;
+let bubbles = [];
+let numBubbles = 1;
 
 /**
 Description of setup
@@ -48,14 +49,17 @@ function setup() {
     prediction = results;
   });
 
-  // The bubble
-  bubble = {
-    x: random(width),
-    y: height,
-    size: random(80, 100),
-    vx: 0,
-    vy: -2,
-  };
+  for (let i = 0; i < numBubbles; i++) {
+    let fillOptions = [
+      p.color(255, 99, 214, alphaValue),
+      p.color(0, 12, 255, alphaValue),
+      p.color(255, 247, 0, alphaValue),
+      p.color(88, 255, 99, alphaValue),
+      p.color(255, 72, 30, alphaValue),
+    ];
+    let bubble = new Bubble(fillOptions);
+    bubbles.push(bubble);
+  }
 }
 
 /**
@@ -75,6 +79,7 @@ Display a text saying that the program is loading
 function loading() {
   background(255);
 
+  // display the loading text
   push();
   textSize(25);
   textStyle(BOLD);
@@ -91,15 +96,11 @@ function running() {
 
   ifHandDetected();
 
-  bubble.x += bubble.vx;
-  bubble.y += bubble.vy;
-
-  // if the bubble reaches the top of the canvas, reset the bubble
-  if (bubble.y < -bubble.size / 2) {
-    resetBubble();
+  for (let i = 0; i < bubbles.length; i++) {
+    bubbles[i].move();
+    bubbles[i].backDown();
+    bubbles[i].displayBubble();
   }
-
-  displayBubble();
 }
 
 function ifHandDetected() {
@@ -140,7 +141,16 @@ function ifHandDetected() {
     for (let i = 0; i < pointsOfHand.length; i++) {
       for (let j = 0; j < pointsOfHand[i].length; j++) {
         displayFinger(pointsOfHand[i][j][0], pointsOfHand[i][j][1]);
-        distFingerBubble(pointsOfHand[i][j][0], pointsOfHand[i][j][1]);
+        for (let h = 0; h < bubbles.length; h++) {
+          if (
+            bubbles[h].distFingerBubble(
+              pointsOfHand[i][j][0],
+              pointsOfHand[i][j][1]
+            )
+          ) {
+            bubbles.splice(h, 1);
+          }
+        }
       }
     }
 
@@ -167,23 +177,19 @@ function ifHandDetected() {
         pointsOfHand[pointAfterI][1][1]
       );
     }
-  }
-}
 
-/**
-reset the bubble's x and y coordinates (x random and y at the bottom of the canvas)
-*/
-function resetBubble() {
-  bubble.x = random(width);
-  bubble.y = height + bubble.size / 2;
-}
+    // claculate the distance between one of the fingers and the palm of the hand
+    let d = dist(
+      pointsOfHand[3][0][0],
+      pointsOfHand[3][0][1],
+      pointsOfHand[5][1][0],
+      pointsOfHand[5][1][1]
+    );
 
-function distFingerBubble(tipX, tipY) {
-  // measure distance between the tip of a finger and the center of the bubble
-  let d = dist(tipX, tipY, bubble.x, bubble.y);
-  // if the tip of the pin is inside the bubble, reset the bubble
-  if (d < bubble.size / 2) {
-    resetBubble();
+    if (d < 50) {
+      let bubble = new Bubble();
+      bubbles.push(bubble);
+    }
   }
 }
 
@@ -206,16 +212,5 @@ function displayHand(x1, y1, x2, y2) {
   strokeWeight(2);
   stroke(255, 0, 0);
   line(x1, y1, x2, y2);
-  pop();
-}
-
-/**
-display a purple-ish circle for the bubble
-*/
-function displayBubble() {
-  push();
-  fill(100, 0, 200, 150);
-  noStroke();
-  ellipse(bubble.x, bubble.y, bubble.size);
   pop();
 }
