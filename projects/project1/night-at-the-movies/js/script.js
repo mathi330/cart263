@@ -1,20 +1,43 @@
 /**
-cut a circle into 12 equal parts and have a red slice be chosen randomly every time the mouse is pressed
+Night at the Movies
+Mathilde Davan
+
 */
 
 "use strict";
 
-let twelfth = undefined;
+// let twelfth = undefined;
 let numParts = 12;
 let chooseRedPosition = undefined;
 
-let size = 150;
+let letter;
+
+let words = undefined;
+let niceWords = undefined;
+let mysteryWord = undefined;
+
+function preload() {
+  words = loadJSON(
+    `https://raw.githubusercontent.com/dariusk/corpora/master/data/words/common.json`
+  );
+  // not sure if I'll use it yet but here just in case
+  niceWords = loadJSON(
+    `https://raw.githubusercontent.com/dariusk/corpora/master/data/words/encouraging_words.json`
+  );
+}
+
+// let size = 150;
 
 function setup() {
   createCanvas(400, 400);
   angleMode(RADIANS);
 
-  twelfth = HALF_PI / 3;
+  mysteryWord = random(words.commonWords);
+  console.log(mysteryWord);
+
+  // twelfth = HALF_PI / 3;
+
+  letter = new Letter(width / 2, height / 2);
 
   chooseRedPosition = Math.floor(random(12));
 }
@@ -23,27 +46,17 @@ function draw() {
   background(220);
 
   // the 12 parts
-  for (let i = 0; i < 12; i++) {
-    parts(twelfth * i);
+  for (let i = 0; i < mysteryWord.length; i++) {
+    fill(255, 0, 0);
+    noStroke();
+    letter.display(letter.twelfth * i);
   }
-
-  fill(255, 0, 0);
-  noStroke();
-  rotateTwelfth(twelfth * chooseRedPosition);
 }
 
 function parts(angle) {
   stroke(220);
   fill(255);
   rotateTwelfth(angle);
-}
-
-function rotateTwelfth(angle) {
-  push();
-  translate(width / 2, height / 2);
-  rotate(angle);
-  arc(0, 0, size, size, PI + HALF_PI, -twelfth * 2, PIE);
-  pop();
 }
 
 function mousePressed() {
