@@ -17,25 +17,28 @@ let niceWords = undefined;
 let mysteryWord = undefined;
 
 function preload() {
-  words = loadJSON(
-    `https://raw.githubusercontent.com/dariusk/corpora/master/data/words/common.json`
-  );
-  // not sure if I'll use it yet but here just in case
-  niceWords = loadJSON(
-    `https://raw.githubusercontent.com/dariusk/corpora/master/data/words/encouraging_words.json`
-  );
+  words = loadJSON(`assets/json/words.json`);
+
+  // words = loadJSON(
+  //   `https://raw.githubusercontent.com/dariusk/corpora/master/data/words/common.json`
+  // );
+  //
+  // niceWords = loadJSON(
+  //   `https://raw.githubusercontent.com/dariusk/corpora/master/data/words/encouraging_words.json`
+  // );
 }
 
 // let size = 150;
 
 function setup() {
-  createCanvas(400, 400);
+  createCanvas(windowWidth, windowHeight);
   angleMode(RADIANS);
 
   mysteryWord = random(words.commonWords);
+  while (mysteryWord.length < 5 || mysteryWord.length > 12) {
+    mysteryWord = random(words.commonWords);
+  }
   console.log(mysteryWord);
-
-  // twelfth = HALF_PI / 3;
 
   letter = new Letter(width / 2, height / 2);
 
@@ -43,13 +46,14 @@ function setup() {
 }
 
 function draw() {
-  background(220);
+  background(240);
 
   // the 12 parts
   for (let i = 0; i < mysteryWord.length; i++) {
     fill(255, 0, 0);
     noStroke();
     letter.display(letter.twelfth * i);
+    letter.designElements();
   }
 }
 
