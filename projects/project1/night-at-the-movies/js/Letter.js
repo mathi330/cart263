@@ -14,6 +14,15 @@ class Letter {
     this.designSize = random(5, 10);
   }
 
+  updateBook(x, y, angle) {
+    this.display(x, y, angle);
+    this.letterDecodingBook(x, y);
+  }
+
+  update(x, y, angle) {
+    this.display(x, y, angle);
+  }
+
   designElements(angle) {
     push();
     fill(255, 0, 0);
@@ -39,6 +48,17 @@ class Letter {
     rotate(this.rotation);
     translate(this.radius, 0);
     ellipse(0, 0, this.designSize);
+    pop();
+  }
+
+  letterDecodingBook(x, y) {
+    push();
+    fill(0);
+    stroke(0);
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    translate(x - 30, y - this.size / 2);
+    text(`${this.letter} :`, 0, 0);
     pop();
   }
 }
