@@ -1,7 +1,6 @@
 {
   "description": "Common English words.",
   "commonWords": [
-    "a",
     "able",
     "about",
     "absolute",
@@ -150,8 +149,6 @@
     "child",
     "choice",
     "choose",
-    "Christ",
-    "Christmas",
     "church",
     "city",
     "claim",
