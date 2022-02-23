@@ -7,11 +7,18 @@ class Letter {
     this.size = 150;
 
     // design of the letter
-    this.numDesign = 1;
-    this.radius = random(this.size / 2 - 10, this.size / 2 + 10);
     this.rotation = PI + HALF_PI;
+    this.numDesign = Math.ceil(random(5));
+
     this.designs = [];
-    this.designSize = random(5, 10);
+    let possiblePos = [0.2, 0.5, 0.8];
+    for (let i = 0; i < this.numDesign; i++) {
+      this.designs.push({
+        radius: random(this.size / 2 - 10, this.size / 2 + 10),
+        pos: random(possiblePos),
+        designSize: random(5, 10),
+      });
+    }
   }
 
   updateBook(x, y, angle) {
@@ -24,14 +31,18 @@ class Letter {
   }
 
   designElements(angle) {
-    push();
-    fill(255, 0, 0);
-    noStroke();
-    translate(this.x, this.y);
-    rotate(this.twelfth * angle);
-    translate(this.radius, 0);
-    ellipse(0, 0, this.designSize);
-    pop();
+    for (let i = 0; i < this.designs.length; i++) {
+      let design = this.designs[i];
+      push();
+      fill(0);
+      noStroke();
+      translate(this.x, this.y);
+      rotate(this.twelfth * angle);
+      rotate(this.twelfth * design.pos);
+      translate(design.radius, 0);
+      ellipse(0, 0, design.designSize);
+      pop();
+    }
   }
 
   display(x, y, angle) {
@@ -44,17 +55,14 @@ class Letter {
     arc(0, 0, this.size, this.size, this.rotation, -this.twelfth * 2);
 
     // points
-    fill(0);
     rotate(this.rotation);
-    translate(this.radius, 0);
-    ellipse(0, 0, this.designSize);
+    this.designElements();
     pop();
   }
 
   letterDecodingBook(x, y) {
     push();
     fill(0);
-    stroke(0);
     textSize(20);
     textAlign(CENTER, CENTER);
     translate(x - 30, y - this.size / 2);

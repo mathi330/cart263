@@ -64,32 +64,14 @@ function setup() {
     let letter = new Letter(alphabet[i]);
     letters.push(letter);
   }
-
-  // wordLetters();
 }
 
 function draw() {
   background(240);
-
-  // the 12 parts
-  for (let i = 0; i < letters.length; i++) {
-    for (let j = 0; j < mysteryWord.length; j++) {
-      let wordLetter = mysteryWord.charAt(j);
-
-      if (letters[i].letter === wordLetter) {
-        myWord.push(letters[i]);
-      }
-
-      // letter.designElements(angle);
-    }
-  }
-
-  for (let i = 0; i < mysteryWord.length; i++) {
-    let angle = myWord[i].twelfth * i;
-    myWord[i].update(width / 4, height / 2, angle);
-  }
-
   decodingBook();
+
+  wordLetters();
+  codedWord();
 }
 
 /**
@@ -110,11 +92,50 @@ function decodingBook() {
   }
 }
 
-// function wordLetters() {
-//   for (let i = 0; i < letters.length; i++) {
-//     for (let j = 0; j < mysteryWord.length; j++) {
-//       let wordLetter = mysteryWord.charAt(j);
-//       let letter = letters[i];
-//     }
-//   }
-// }
+function codedWord() {
+  let a = 0;
+  for (let i = 0; i < mysteryWord.length; i++) {
+    let angle = myWord[i].twelfth * i;
+    helpLine(angle, myWord[i]);
+    myWord[i].update(width / 4, height / 2, angle);
+
+    push();
+    fill(0);
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    translate(width / 4, (height / 3) * 2);
+    text(`${myWord[i].letter}`, 0 + a, 0);
+    pop();
+
+    a += 20;
+  }
+}
+
+function helpLine(angle, word) {
+  push();
+  stroke(255, 0, 0, 50);
+  translate(width / 4, height / 2);
+  rotate(angle);
+  line(0, 0, 0, -word.size / 2);
+  pop();
+
+  push();
+  stroke(255, 0, 0, 50);
+  translate(width / 4, height / 2);
+  rotate(angle + word.twelfth);
+  line(0, 0, 0, -word.size / 2);
+  pop();
+}
+
+function wordLetters() {
+  // the 12 parts
+  for (let j = 0; j < mysteryWord.length; j++) {
+    for (let i = 0; i < letters.length; i++) {
+      let wordLetter = mysteryWord.charAt(j);
+
+      if (letters[i].letter === wordLetter) {
+        myWord.push(letters[i]);
+      }
+    }
+  }
+}
