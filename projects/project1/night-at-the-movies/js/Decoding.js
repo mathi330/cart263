@@ -70,9 +70,12 @@ class Decoding extends State {
     this.wordLength();
   }
 
+  /**
+  update the visual of the decoding state
+  */
   update() {
-    super.update();
     background(240);
+    super.update();
     this.decodingBook();
 
     this.wordLetters();
@@ -122,7 +125,16 @@ class Decoding extends State {
     // for loop to get through all the letters of the mystery word
     for (let i = 0; i < this.mysteryWord.word.length; i++) {
       let angle = this.myWord[i].twelfth * i; // the angle by which the arc needs to be rotated
-      this.helpLine(angle, this.myWord[i]); // the lines that help the decoder determine where the letters are separated
+
+      this.helpLineUpdate(angle, this.myWord[i], i);
+
+      if (i === this.mysteryWord.word.length - 1) {
+        this.helpLineUpdate(
+          this.myWord[i].twelfth * (i + 1),
+          this.myWord[i],
+          i
+        );
+      }
       this.myWord[i].update(width / 4, height / 2, angle); // create each letter of the word
 
       // the guess of the decoder written under the coded version of the word
@@ -136,11 +148,7 @@ class Decoding extends State {
     }
   }
 
-  /**
-  help lines that help the decoder separate each letter on the encoded word
-  */
-  helpLine(angle, word) {
-    // line at the beginning of the letter
+  helpLineUpdate(angle, word, i) {
     push();
     stroke(
       this.helpLineColor.r,
@@ -150,19 +158,6 @@ class Decoding extends State {
     );
     translate(width / 4, height / 2);
     rotate(angle);
-    line(0, 0, 0, -word.size / 2);
-    pop();
-
-    // line at the end of the letter
-    push();
-    stroke(
-      this.helpLineColor.r,
-      this.helpLineColor.g,
-      this.helpLineColor.b,
-      this.helpLineColor.a
-    );
-    translate(width / 4, height / 2);
-    rotate(angle + word.twelfth);
     line(0, 0, 0, -word.size / 2);
     pop();
   }
@@ -225,16 +220,13 @@ class Decoding extends State {
   - space bar: help line appear/disappear
   */
   keyPressed() {
-    // If the space bar is pressed
-    if (keyCode === 32) {
-      // if the help lines are invisible
-      if (this.helpLineColor.a === 0) {
-        // make them visible
-        this.helpLineColor.a = 50;
-      } else {
-        // if they are visible, make them invisible
-        this.helpLineColor.a = 0;
-      }
+    // if the help lines are invisible
+    if (this.helpLineColor.a === 0) {
+      // make them visible
+      this.helpLineColor.a = 50;
+    } else {
+      // if they are visible, make them invisible
+      this.helpLineColor.a = 0;
     }
   }
 }

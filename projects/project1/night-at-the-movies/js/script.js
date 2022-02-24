@@ -27,6 +27,7 @@ function setup() {
     let commands = {
       // "*letter": guessLetter,
       "*word": guessWord,
+      // debug: helpLines,
     };
     // Setup annyang and start
     annyang.addCommands(commands);
@@ -45,9 +46,12 @@ function draw() {
 stores the decoder's guess in the "mysteryWord.visibleWord" and converts it to lower case
 */
 function guessWord(word) {
-  state.mysteryWord.visibleWord = word.toLowerCase();
-}
-
-function keyPressed() {
-  state.keyPressed();
+  // the decoder's guess
+  if (word.length < 12 && word !== `debug`) {
+    state.mysteryWord.visibleWord = word.toLowerCase();
+  }
+  // the lines to help the decoder
+  if (word === `debug`) {
+    state.keyPressed();
+  }
 }
