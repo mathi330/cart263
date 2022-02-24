@@ -53,6 +53,23 @@ class Decoding extends State {
   }
 
   setup(word) {
+    this.letters = [];
+
+    this.myWord = [];
+    this.mysteryWord = {
+      word: undefined, // word
+      hiddenWord: undefined, // a string of asterisks
+      visibleWord: ``, // what you see next to the "PASSWORD:" (the actual password or the hidden version)
+      underscore: `_ `, // used to create the spyProfile.invisiblePassword
+    };
+
+    this.helpLineColor = {
+      r: 255,
+      g: 0,
+      b: 0,
+      a: 0,
+    };
+
     this.mysteryWord.word = random(word.commonWords);
     while (
       this.mysteryWord.word.length < 5 ||
@@ -219,7 +236,7 @@ class Decoding extends State {
   /**
   - space bar: help line appear/disappear
   */
-  keyPressed() {
+  helpLine() {
     // if the help lines are invisible
     if (this.helpLineColor.a === 0) {
       // make them visible
@@ -228,5 +245,9 @@ class Decoding extends State {
       // if they are visible, make them invisible
       this.helpLineColor.a = 0;
     }
+  }
+
+  changeState() {
+    state = new Intro();
   }
 }

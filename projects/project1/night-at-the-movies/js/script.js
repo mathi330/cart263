@@ -19,7 +19,7 @@ function setup() {
 
   state = new Decoding();
 
-  state.setup(words);
+  mySetup();
 
   // Is annyang available
   if (annyang) {
@@ -27,6 +27,8 @@ function setup() {
     let commands = {
       // "*letter": guessLetter,
       "*word": guessWord,
+      // change: changeState,
+      // next: newWord,
       // debug: helpLines,
     };
     // Setup annyang and start
@@ -38,20 +40,47 @@ function setup() {
   }
 }
 
+function mySetup() {
+  state.setup(words);
+}
+
 function draw() {
   state.update();
 }
 
 /**
-stores the decoder's guess in the "mysteryWord.visibleWord" and converts it to lower case
+tells annyang what to do depending on the word said
 */
 function guessWord(word) {
   // the decoder's guess
-  if (word.length < 12 && word !== `debug`) {
+  if (
+    word.length < 12 &&
+    word !== `help` &&
+    word !== `change` &&
+    word !== `next`
+  ) {
     state.mysteryWord.visibleWord = word.toLowerCase();
   }
   // the lines to help the decoder
-  if (word === `debug`) {
-    state.keyPressed();
+  if (word === `help`) {
+    state.helpLine();
+  }
+  // to change state
+  if (word === `change`) {
+    state.changeState();
+    // words = undefined;
+    mySetup();
+    state.setup(words);
   }
 }
+
+function newWord() {}
+
+// function keyPressed() {
+//   if (keyCode === 32) {
+//     state.changeState();
+//     // words = undefined;
+//     mySetup();
+//     state.setup(words);
+//   }
+// }
