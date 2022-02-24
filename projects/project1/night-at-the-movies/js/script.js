@@ -1,10 +1,6 @@
 /**
 Night at the Movies
 Mathilde Davan
-
-  - use a web storage API to save the "language"
-  - find a way to learn how o get the letters of the alphabet and "letters" array and the letters
-  of the mystery word work together
 */
 
 "use strict";
@@ -76,6 +72,21 @@ function setup() {
   }
 
   wordLength();
+
+  // Is annyang available
+  if (annyang) {
+    // Create the guessing command
+    let commands = {
+      // "*letter": guessLetter,
+      "*word": guessWord,
+    };
+    // Setup annyang and start
+    annyang.addCommands(commands);
+    annyang.start();
+    annyang.debug();
+
+    // btw you can use annyang.trigger(`___`) in the console if you don't want to talk
+  }
 }
 
 function draw() {
@@ -115,21 +126,22 @@ function decodingBook() {
 }
 
 /**
-
+The circle corresponding to the word and the decoder's guess under
 */
 function codedWord() {
+  // for loop to get through all the letters of the mystery word
   for (let i = 0; i < mysteryWord.word.length; i++) {
-    let angle = myWord[i].twelfth * i;
-    helpLine(angle, myWord[i]);
-    myWord[i].update(width / 4, height / 2, angle);
+    let angle = myWord[i].twelfth * i; // the angle by which the arc needs to be rotated
+    helpLine(angle, myWord[i]); // the lines that help the decoder determine where the letters are separated
+    myWord[i].update(width / 4, height / 2, angle); // create each letter of the word
 
+    // the guess of the decoder written under the coded version of the word
     push();
     fill(0);
     textSize(20);
     textAlign(CENTER, CENTER);
-    translate(width / 4, (height / 3) * 2);
-
-    text(`${mysteryWord.visibleWord}`, 0, 0);
+    translate(width / 4, (height / 3) * 2); // placing it under the code
+    displayAnswer(); // displays the decoder's guess in red if it is wrong and black if it is correct
     pop();
   }
 }
@@ -176,6 +188,21 @@ function wordLetters() {
 }
 
 /**
+function to count the length of the password and transform it into a hidden password
+*/
+function wordLength() {
+  // empty the visible and hidden password variables
+  mysteryWord.visibleWord = ``;
+  mysteryWord.hiddenWord = ``;
+  // for loop to transform the visible password into a same number of asterisks
+  for (let i = 0; i < mysteryWord.word.length; i++) {
+    mysteryWord.hiddenWord += mysteryWord.underscore; // add an asterisk for each letter
+  }
+  // make the thing you see as your password the hidden one
+  mysteryWord.visibleWord = `${mysteryWord.hiddenWord}`;
+}
+
+/**
 - space bar: help line appear/disappear
 */
 function keyPressed() {
@@ -192,17 +219,31 @@ function keyPressed() {
   }
 }
 
+//-----------------------------------------------
+//-----------------------------------------------
+
 /**
-function to count the length of the password and transform it into a hidden password
+stores the decoder's guess in the "mysteryWord.visibleWord" and converts it to lower case
 */
-function wordLength() {
-  // empty the visible and hidden password variables
-  mysteryWord.visibleWord = ``;
-  mysteryWord.hiddenWord = ``;
-  // for loop to transform the visible password into a same number of asterisks
-  for (let i = 0; i < mysteryWord.word.length; i++) {
-    mysteryWord.hiddenWord += mysteryWord.underscore; // add an asterisk for each letter
+function guessWord(word) {
+  mysteryWord.visibleWord = word.toLowerCase();
+}
+
+/**
+Display the current answer in red if incorrect and black if correct
+*/
+function displayAnswer() {
+  // if the guess is correct
+  if (mysteryWord.visibleWord === mysteryWord.word) {
+    fill(0); // make it appear in black
   }
-  // make the thing you see as your password the hidden one
-  mysteryWord.visibleWord = `${mysteryWord.hiddenWord}`;
+  // if the guess is incorrect
+  else if (
+    mysteryWord.visibleWord !== mysteryWord.word &&
+    mysteryWord.visibleWord !== mysteryWord.hiddenWord // the hidden version of the word
+  ) {
+    fill(255, 0, 0); // make it appear in red
+  }
+  // display the guess
+  text(`${mysteryWord.visibleWord}`, 0, 0);
 }
