@@ -77,7 +77,7 @@ class Decoding extends State {
     ) {
       this.mysteryWord.word = random(word.commonWords);
     }
-    console.log(this.mysteryWord.word);
+    // console.log(this.mysteryWord.word);
 
     for (let i = 0; i < this.alphabet.length; i++) {
       let letter = new Letter(this.alphabet[i]);
@@ -156,7 +156,7 @@ class Decoding extends State {
 
       // the guess of the decoder written under the coded version of the word
       push();
-      fill(0);
+      textFont(myFont);
       textSize(20);
       textAlign(CENTER, CENTER);
       translate(width / 4, (height / 3) * 2); // placing it under the code

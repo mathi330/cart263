@@ -2,13 +2,11 @@
 Super class for the states
 */
 class State {
+  // both
   constructor() {}
-
   setup() {}
   update() {}
-
   changeState() {}
-  keyPressed() {}
 
   // Decoding state
   decodingBook() {}

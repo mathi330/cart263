@@ -5,11 +5,16 @@ Mathilde Davan
 
 "use strict";
 
+let myFont = undefined;
+let myFontBold = undefined;
+
 let words = undefined;
 
 let state = undefined;
 
 function preload() {
+  myFont = loadFont(`assets/fonts/Montserrat-ExtraLight.ttf`);
+  myFontBold = loadFont(`assets/fonts/Montserrat-Medium.ttf`);
   words = loadJSON(`assets/json/words.json`);
 }
 
@@ -17,7 +22,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(RADIANS);
 
-  state = new Decoding();
+  state = new Intro();
 
   mySetup();
 
@@ -56,7 +61,7 @@ function guessWord(word) {
   if (
     word.length < 12 &&
     word !== `help` &&
-    word !== `change` &&
+    word !== `start` &&
     word !== `next`
   ) {
     state.mysteryWord.visibleWord = word.toLowerCase();
@@ -66,21 +71,15 @@ function guessWord(word) {
     state.helpLine();
   }
   // to change state
-  if (word === `change`) {
+  if (word === `start`) {
     state.changeState();
     // words = undefined;
     mySetup();
     state.setup(words);
   }
+
+  if (word === `next`) {
+    mySetup();
+    state.setup(words);
+  }
 }
-
-function newWord() {}
-
-// function keyPressed() {
-//   if (keyCode === 32) {
-//     state.changeState();
-//     // words = undefined;
-//     mySetup();
-//     state.setup(words);
-//   }
-// }
