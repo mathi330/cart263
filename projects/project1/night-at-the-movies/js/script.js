@@ -1,6 +1,10 @@
 /**
 Night at the Movies
 Mathilde Davan
+
+A game/simulation where the "player" decodes an alien language by saying their guess.
+This program uses annyang and JSON data.
+The decoder can go through the program without ever touching their keyboard simply by talking to the program.
 */
 
 "use strict";
@@ -14,12 +18,23 @@ let words = undefined;
 // state (Intro, Decoding)
 let state = undefined;
 
+/**
+preload fonts and JSON data
+*/
 function preload() {
   myFont = loadFont(`assets/fonts/Montserrat-ExtraLight.ttf`);
   myFontBold = loadFont(`assets/fonts/Montserrat-Medium.ttf`);
   words = loadJSON(`assets/json/words.json`);
 }
 
+/**
+setup for the program:
+ - canvas size of window
+ - angle calculated in radians
+ - set state to the introduction
+ - setup mystery word
+ - setup annyang
+*/
 function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(RADIANS);
@@ -62,7 +77,7 @@ tells annyang what to do depending on the word said
 function guessWord(word) {
   // the decoder's guess
   if (
-    word.length < 12 &&
+    word.length < 13 &&
     word !== `help` &&
     word !== `start` &&
     word !== `next`
