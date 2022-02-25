@@ -23,24 +23,18 @@ with the help of the decoding book left by your predecessor, Dr. Louise Banks.`,
 
   update() {
     background(0);
+    super.update();
 
     for (let i = 0; i < this.text.length; i++) {
-      this.introTextDisplay(
+      super.introTextDisplay(
         this.text[i],
         this.textSizes[i],
-        (height / 15) * (i + 2)
+        width / 2,
+        (height / 15) * (i + 2),
+        255,
+        CENTER
       );
     }
-  }
-
-  introTextDisplay(txt, size, yPos) {
-    push();
-    fill(255);
-    textFont(myFontBold);
-    textSize(size);
-    textAlign(CENTER, CENTER);
-    text(txt, width / 2, yPos);
-    pop();
   }
 
   changeState() {

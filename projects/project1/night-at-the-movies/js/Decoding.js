@@ -5,6 +5,10 @@ class Decoding extends State {
   constructor() {
     super();
 
+    this.text = [`START: starting page`, `HELP: show hint`, `NEXT: new word`];
+    this.title = `Decoding Book`;
+    this.textSizes = [15, 15, 15, 25];
+
     // let letter;
     this.alphabet = [
       `a`,
@@ -43,6 +47,7 @@ class Decoding extends State {
       visibleWord: ``, // what you see next to the "PASSWORD:" (the actual password or the hidden version)
       underscore: `_ `, // used to create the spyProfile.invisiblePassword
     };
+    // this.wordStart = Math.floor(random(5));
 
     this.helpLineColor = {
       r: 255,
@@ -93,6 +98,24 @@ class Decoding extends State {
   update() {
     background(240);
     super.update();
+    for (let i = 0; i < this.text.length; i++) {
+      super.introTextDisplay(
+        this.text[i],
+        this.textSizes[i],
+        width / 25,
+        (height / 15) * (i * 0.5 + 0.8),
+        0,
+        LEFT
+      );
+    }
+    super.introTextDisplay(
+      this.title,
+      this.textSizes[this.textSizes.length - 1],
+      (width / 8) * 5.5,
+      (height / 15) * 0.8,
+      0,
+      CENTER
+    );
     this.decodingBook();
 
     this.wordLetters();
@@ -141,9 +164,10 @@ class Decoding extends State {
   codedWord() {
     // for loop to get through all the letters of the mystery word
     for (let i = 0; i < this.mysteryWord.word.length; i++) {
+      // let start = i * this.wordStart;
       let angle = this.myWord[i].twelfth * i; // the angle by which the arc needs to be rotated
 
-      this.helpLineUpdate(angle, this.myWord[i], i);
+      this.helpLineUpdate(angle, this.myWord[i]);
 
       if (i === this.mysteryWord.word.length - 1) {
         this.helpLineUpdate(
@@ -165,7 +189,7 @@ class Decoding extends State {
     }
   }
 
-  helpLineUpdate(angle, word, i) {
+  helpLineUpdate(angle, word) {
     push();
     stroke(
       this.helpLineColor.r,

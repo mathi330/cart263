@@ -5,11 +5,13 @@ Mathilde Davan
 
 "use strict";
 
+// my fonts
 let myFont = undefined;
 let myFontBold = undefined;
 
+// random word
 let words = undefined;
-
+// state (Intro, Decoding)
 let state = undefined;
 
 function preload() {
@@ -22,6 +24,7 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   angleMode(RADIANS);
 
+  // start with the intro state
   state = new Intro();
 
   mySetup();
@@ -30,25 +33,25 @@ function setup() {
   if (annyang) {
     // Create the guessing command
     let commands = {
-      // "*letter": guessLetter,
       "*word": guessWord,
-      // change: changeState,
-      // next: newWord,
-      // debug: helpLines,
     };
     // Setup annyang and start
     annyang.addCommands(commands);
     annyang.start();
     annyang.debug();
-
-    // btw you can use annyang.trigger(`___`) in the console if you don't want to talk
   }
 }
 
+/**
+setup the word everytime a new word needs to be chosen
+*/
 function mySetup() {
   state.setup(words);
 }
 
+/**
+display the state's visual
+*/
 function draw() {
   state.update();
 }
@@ -64,6 +67,7 @@ function guessWord(word) {
     word !== `start` &&
     word !== `next`
   ) {
+    // set the word to its lower case version
     state.mysteryWord.visibleWord = word.toLowerCase();
   }
   // the lines to help the decoder
