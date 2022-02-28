@@ -23,21 +23,23 @@ let sevenSyllableLines = [
   `They will not come back again`,
 ];
 
-let line1 = random(fiveSyllableLines);
-let line2 = random(sevenSyllableLines);
-let line3 = random(fiveSyllableLines);
+let line1;
+let line2;
+let line3;
 
 let line1P = document.getElementById(`line-1`);
 let line2P = document.getElementById(`line-2`);
 let line3P = document.getElementById(`line-3`);
 
-line1P.innerText = line1;
-line2P.innerText = line2;
-line3P.innerText = line3;
+setup(line1, fiveSyllableLines, line1P);
+setup(line2, sevenSyllableLines, line2P);
+setup(line3, fiveSyllableLines, line3P);
 
-line1P.addEventListener(`click`, lineClicked);
-line2P.addEventListener(`click`, lineClicked);
-line3P.addEventListener(`click`, lineClicked);
+function setup(line, numSyllableLines, lineP) {
+  line = random(numSyllableLines);
+  lineP.innerText = line;
+  lineP.addEventListener(`click`, lineClicked);
+}
 
 function lineClicked(event) {
   fadeOut(event.target, 1);
