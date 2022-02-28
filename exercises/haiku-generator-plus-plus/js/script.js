@@ -8,6 +8,31 @@ author, and this description to match your project!
 
 "use strict";
 
+let titleWords = [
+  `Life`,
+  `Nature`,
+  `Ocean`,
+  `Waves`,
+  `True`,
+  `Gandalf`,
+  `Light`,
+  `Shadow`,
+  `Love`,
+  `Hate`,
+  `T-Shirt`,
+  `Platipus`,
+  `Coffee`,
+  `Games`,
+  `Lame`,
+  // `Gandalf's Shadow T-shirt`,
+  // `The Coffiest Coffee is Lame`,
+  // `True Life Games`,
+  // `Gandlaf's Waves`,
+  // `Hate Platipus`,
+  // `The Waves of Life`
+];
+let titleLength = 2;
+
 let fiveSyllableLines = [
   `O, to be a tree`,
   `The cat does not know`,
@@ -15,6 +40,15 @@ let fiveSyllableLines = [
   `You have done your best`,
   `They are all gone now`,
 ];
+// I love coffee more
+// I love banana
+// My sis is the best
+// When we went that way
+// Games are lame and sane
+// Tea is much better
+
+// "Les haikus laissent place a l'interpretation"
+//                                   - The best sister mentioned above
 let sevenSyllableLines = [
   `Say the things left unsaid`,
   `Never believe the wind's lies`,
@@ -22,6 +56,18 @@ let sevenSyllableLines = [
   `Nothing can satisfy you`,
   `They will not come back again`,
 ];
+// Coffee is for the coffee is for the weak one
+// Life is meant to have sweetness
+
+let title = `The`;
+
+for (let i = 0; i < titleLength; i++) {
+  let word = random(titleWords);
+  title += ` ` + word;
+}
+console.log(title);
+let titleH1 = document.getElementById(`title`);
+titleH1.innerText = title;
 
 let line1;
 let line2;
