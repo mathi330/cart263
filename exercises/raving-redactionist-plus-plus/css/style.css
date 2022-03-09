@@ -27,3 +27,9 @@ h2 {
   color: #ff0000;
   font-weight: bold;
 }
+
+#buttons-div {
+  position: absolute;
+  top: 35px;
+  left: 20%;
+}
