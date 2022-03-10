@@ -16,15 +16,9 @@ h2 {
 }
 
 .redacted {
-  background-color: #0000000;
   user-select: none;
 
   border-radius: 8px;
-}
-
-.revealed {
-  color: #ff0000;
-  font-weight: bold;
 }
 
 #buttons-div {

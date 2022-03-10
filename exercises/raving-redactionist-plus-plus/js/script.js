@@ -45,8 +45,11 @@ let fifthOfBodyWidth = $(document).width() / 5;
 let changes = [
   `change the text's background color`,
   `change the background color of the redacted words`,
-  ``,
+  `change the redacted words`,
+  `reveal redacted words`,
 ];
+
+let textRedacted = true;
 
 // Add the lorem ipsum to the page (complete with event listeners)
 addLoremIpsum();
@@ -118,6 +121,20 @@ function createButton(xPosition) {
   });
   $button.text(`Click Me!`); // text in button
 
+  let buttonType = getRndInteger(0, changes.length);
+  if (buttonType === 0) {
+    $button.on(`click`, backgroundColorChange);
+  } else if (buttonType === 1) {
+    $button.on(`click`, redactedBgColor);
+  } else if (buttonType === 2) {
+    $button.on(`click`, function () {
+      $(`p`).remove();
+      addLoremIpsum();
+    });
+  } else if (buttonType === 3) {
+    $button.on(`click`, redactedRevealed);
+  }
+
   $(`#button-section`).append($buttons); //place the button in the first section (#button-section)
   $buttons.push($button); // add the button at the end of the buttons array
 }
@@ -138,23 +155,6 @@ function getRndInteger(min, max) {
 /**
 create the different possible changes that can occur when a button is clicked
 */
-for (let i = 0; i < $buttons.length; i++) {
-  $buttons[i].on(`click`, createChange);
-}
-
-function createChange() {
-  let whatChange = getRndInteger(0, changes.length);
-  changes[whatChange];
-
-  if (whatChange === 0) {
-    backgroundColorChange();
-  } else if (whatChange === 1) {
-    redactedBgColor();
-  } else if ((whatChange = 2)) {
-    $(`p`).remove();
-    addLoremIpsum();
-  }
-}
 
 function backgroundColorChange() {
   let r = getRndInteger(0, 255);
@@ -180,5 +180,20 @@ function chooseRedactedWords(span) {
   let rand = Math.random();
   if (rand < 0.2) {
     $(span).addClass(`redacted`);
+  }
+}
+
+function redactedRevealed() {
+  if (textRedacted === true) {
+    $(`.redacted`).removeClass(`redacted`).addClass(`revealed`);
+    $(`.revealed`).css({
+      "background-color": "rgba(0,0,0,0)",
+      "font-weight": "bold",
+    });
+    textRedacted = false;
+  } else if (textRedacted === false) {
+    $(`.revealed`).removeClass(`revealed`).addClass(`redacted`);
+    redactedBgColor();
+    textRedacted = true;
   }
 }
