@@ -33,6 +33,7 @@ const loremIpsumTexts = [
   `Aenean eu nisl id nunc dapibus faucibus. Donec ullamcorper nec tellus vitae facilisis. Etiam lacinia maximus eros vel auctor. Mauris eget dui vel sem convallis placerat. Donec egestas convallis libero id fringilla. Etiam sit amet iaculis libero. Ut faucibus, sem ac hendrerit cursus, lorem turpis semper nunc, ut lacinia diam neque vitae tortor. Curabitur vitae velit augue. Fusce sed molestie erat.`,
   `Cras imperdiet, eros in dictum sodales, elit nibh faucibus sapien, vitae vulputate risus leo a lacus. Praesent pellentesque varius urna nec facilisis. Praesent eu metus quis sapien tincidunt sollicitudin non id nibh. Aenean rutrum laoreet auctor. Aliquam consequat nisl nec libero sodales, eget condimentum sem dapibus. Sed in commodo ex, sit amet bibendum odio. Curabitur auctor, nibh eget feugiat vestibulum, magna ipsum gravida purus, ut suscipit erat nulla vel purus. Morbi vehicula porttitor faucibus. Fusce viverra lorem erat, nec congue est facilisis vitae.`,
   `Vivamus facilisis, felis at tempus pretium, leo turpis ullamcorper risus, sed maximus mi neque a sapien. Aliquam convallis orci quis quam sodales, ac luctus lectus elementum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Aliquam sit amet egestas arcu, nec elementum nulla. Mauris aliquet, tellus sit amet hendrerit pulvinar, sapien sapien bibendum purus, a ornare quam diam interdum leo. Suspendisse non accumsan enim. Duis ac lacus tincidunt, porta neque et, tempor lorem. Sed vehicula condimentum erat. Fusce eget dolor ac elit ullamcorper sodales. Maecenas congue odio a cursus viverra. Nullam euismod felis sapien, quis iaculis elit lobortis vel. Sed imperdiet, nunc id bibendum suscipit, justo magna interdum libero, ac lobortis urna magna sit amet mauris. In hac habitasse platea dictumst. In at justo lacinia, laoreet sapien id, malesuada eros. Mauris vel dapibus massa, ut pellentesque arcu.`,
+  ``,
 ];
 
 // array for the buttons
@@ -44,6 +45,7 @@ let fifthOfBodyWidth = $(document).width() / 5;
 let changes = [
   `change the text's background color`,
   `change the background color of the redacted words`,
+  ``,
 ];
 
 // Add the lorem ipsum to the page (complete with event listeners)
@@ -77,6 +79,7 @@ function addLoremIpsum() {
       span.text(`${words[j]} `);
 
       chooseRedactedWords(span);
+      redactedBgColor();
 
       // Add the current span (word) the current paragraph
       paragraph.append(span);
@@ -147,6 +150,9 @@ function createChange() {
     backgroundColorChange();
   } else if (whatChange === 1) {
     redactedBgColor();
+  } else if ((whatChange = 2)) {
+    $(`p`).remove();
+    addLoremIpsum();
   }
 }
 
@@ -165,8 +171,8 @@ function redactedBgColor() {
   let b = getRndInteger(0, 255);
 
   $(`.redacted`).css({
-    "background-color": `rgb(${r},${g},${b})`,
     color: `rgb(${r},${g},${b})`,
+    "background-color": `rgb(${r},${g},${b})`,
   });
 }
 
@@ -174,6 +180,5 @@ function chooseRedactedWords(span) {
   let rand = Math.random();
   if (rand < 0.2) {
     $(span).addClass(`redacted`);
-    redactedBgColor(span);
   }
 }

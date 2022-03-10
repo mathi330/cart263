@@ -16,7 +16,7 @@ h2 {
 }
 
 .redacted {
-  background-color: #000000;
+  background-color: #0000000;
   user-select: none;
 
   border-radius: 8px;
