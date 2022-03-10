@@ -16,6 +16,7 @@ h2 {
 }
 
 .redacted {
+  font-weight: lighter;
   user-select: none;
 
   border-radius: 8px;

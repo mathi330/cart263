@@ -6,27 +6,6 @@ Mathilde Davan
 
 "use strict";
 
-// $(`.top-secret`).on(`click`, redact);
-//
-// setInterval(revelation, 500);
-//
-// function redact(event) {
-//   $(this).removeClass(`revealed`);
-//   $(this).addClass(`redacted`);
-// }
-//
-// function revelation() {
-//   $(`.redacted`).each(attemptReveal);
-// }
-//
-// function attemptReveal() {
-//   let r = Math.random();
-//   if (r < 0.05) {
-//     $(this).removeClass(`redacted`);
-//     $(this).addClass(`revealed`);
-//   }
-// }
-
 const loremIpsumTexts = [
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce tincidunt sapien id suscipit dapibus. Nullam condimentum ante vitae neque laoreet maximus. Etiam viverra et ipsum at euismod. Aenean luctus nunc neque, eget malesuada felis dictum sed. Duis feugiat dui sit amet venenatis interdum. Maecenas sed erat vel orci elementum tempor eget vel ante. Quisque aliquet pretium leo, ac faucibus dui pharetra et. In sagittis felis vel velit posuere rutrum. Mauris venenatis ultrices tempus. Praesent congue finibus nisl sit amet dapibus. Nam hendrerit varius felis eget consequat. Nunc dapibus felis non tellus dapibus blandit. Suspendisse a augue ac dui blandit placerat vel vel dolor. Mauris et mi cursus velit aliquam mattis. Ut ac pulvinar turpis.`,
   `Suspendisse a nisl id diam posuere tempor vitae a justo. Quisque pharetra varius venenatis. Aenean et facilisis lectus. Vivamus lobortis nisl mi, a volutpat nisl dapibus sit amet. Ut ac vulputate leo, sit amet ultricies urna. Suspendisse porttitor cursus vulputate. Fusce bibendum sodales magna sit amet vehicula.`,
@@ -47,6 +26,7 @@ let changes = [
   `change the background color of the redacted words`,
   `change the redacted words`,
   `reveal redacted words`,
+  `make the redacted words disappear`,
 ];
 
 let textRedacted = true;
@@ -133,6 +113,8 @@ function createButton(xPosition) {
     });
   } else if (buttonType === 3) {
     $button.on(`click`, redactedRevealed);
+  } else if (buttonType === 4) {
+    $button.on(`click`, hideRedacted);
   }
 
   $(`#button-section`).append($buttons); //place the button in the first section (#button-section)
@@ -186,6 +168,7 @@ function chooseRedactedWords(span) {
 function redactedRevealed() {
   if (textRedacted === true) {
     $(`.redacted`).removeClass(`redacted`).addClass(`revealed`);
+
     $(`.revealed`).css({
       "background-color": "rgba(0,0,0,0)",
       "font-weight": "bold",
@@ -194,6 +177,22 @@ function redactedRevealed() {
   } else if (textRedacted === false) {
     $(`.revealed`).removeClass(`revealed`).addClass(`redacted`);
     redactedBgColor();
+    textRedacted = true;
+  }
+}
+
+function hideRedacted() {
+  if (textRedacted === true) {
+    $(`.redacted`).animate({
+      opacity: 0,
+      "font-weight": "bold",
+    });
+    textRedacted = false;
+  } else if (textRedacted === false) {
+    $(`.redacted`).animate({
+      opacity: 1,
+      "font-weight": "lighter",
+    });
     textRedacted = true;
   }
 }
