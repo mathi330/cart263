@@ -1,9 +1,18 @@
 body {
   height: 95vh;
+  font-family: monospace;
 }
 
 #poem {
   font-size: 1.5rem;
+}
+
+span::selection {
+  background-color: #eeeeee;
+}
+
+#answer::selection {
+  background-color: #eeeeee;
 }
 
 #answer {
@@ -13,7 +22,7 @@ body {
   left: 50%;
   transform: translate(-50%);
   height: 2rem;
-  width: 10rem;
+  width: 13rem;
   border: 1px dashed black;
 
   font-size: 1.5rem;
@@ -21,4 +30,5 @@ body {
 
 .found {
   color: #ff0000;
+  font-weight: bold;
 }
