@@ -1,10 +1,22 @@
+body {
+  height: 95vh;
+}
+
 #poem {
   font-size: 1.5rem;
 }
+
 #answer {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%);
   height: 2rem;
   width: 10rem;
   border: 1px dashed black;
+
+  font-size: 1.5rem;
 }
 
 .found {
