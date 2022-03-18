@@ -1,33 +1,41 @@
+/* give a height to the body and make the text in the body be monospace of 1.5rem */
 body {
   height: 95vh;
   font-family: monospace;
 }
 
-#poem {
-  font-size: 1.5rem;
-}
-
+/* if the letters are selected, make their background light gray */
 span::selection {
   background-color: #eeeeee;
 }
 
+/* if the letters in the answer box are selected make their background light gray */
 #answer::selection {
   background-color: #eeeeee;
 }
 
-#answer {
-  position: absolute;
-
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%);
-  height: 2rem;
-  width: 13rem;
-  border: 1px dashed black;
-
+/* size of the letters */
+#poem {
   font-size: 1.5rem;
 }
 
+/* set up the answer's style */
+#answer {
+  position: absolute;
+  /* place the answer box centered horizontally and vertically on the page */
+  top: 50%;
+  left: 50%;
+  /* center it from the center of the rectangle instead of the corner */
+  transform: translate(-50%);
+  /* the dimensions of the box */
+  height: 2rem;
+  width: 16rem;
+  /* the border of the box */
+  border: 1px dashed black;
+  font-size: 1.5rem;
+}
+
+/* if a letter is hovered over by the mouse (it applies to every letter that are not the answer) */
 .found {
   color: #ff0000;
   font-weight: bold;
