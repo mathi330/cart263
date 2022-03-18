@@ -4,7 +4,7 @@ Mathilde Davan
 
 This exercise is a page filled with letters that the user can arrange into whatever word they want in the answer box in the middle of the page.
 The letters change when the user hovers over them and the user can get to the end by creating a word of the appropriate number of letters.
-And you can try to create the word "amazing" :)
+And you can try to create the words "amazing," "beautiful," "support" :)
 */
 
 "use strict";
@@ -86,6 +86,14 @@ function game() {
       if ($(this).text() === `amazing`) {
         amazing(); // go to the amazing ending
       }
+      // See if the word created is "amazing"
+      if ($(this).text() === `beautiful`) {
+        beautiful(); // go to the amazing ending
+      }
+      // See if the word created is "amazing"
+      if ($(this).text() === `support`) {
+        support(); // go to the amazing ending
+      }
     },
   });
 
@@ -121,7 +129,7 @@ function game() {
     buttons: {
       // button to start again
       "Find a new word!": function () {
-        setup(); // reset everything
+        game(); // reset everything
         $(this).dialog(`close`); // close the box
       },
       // button to stop "playing"
@@ -165,6 +173,48 @@ function amazing() {
   });
 
   $(`#answer`).text(`I agree, this program is amazing :P`); // text that appears on the page
+  // formatting of the text and answer box
+  $(`#answer`).css({
+    width: `35rem`,
+    "text-align": `center`, // text centered
+    border: `0px`, // box's borders invisible
+    color: `#000000`, // text color black
+    "font-weight": `bold`, // text in bold
+  });
+}
+
+/**
+beautiful()
+the page that appears if the user enters the word "beautiful"
+*/
+function beautiful() {
+  setup(); //reset everything
+  $(`body`).css({
+    "background-color": `#cccccc`, // light gray background
+  });
+
+  $(`#answer`).text(`You are beautiful!`); // text that appears on the page
+  // formatting of the text and answer box
+  $(`#answer`).css({
+    width: `35rem`,
+    "text-align": `center`, // text centered
+    border: `0px`, // box's borders invisible
+    color: `#000000`, // text color black
+    "font-weight": `bold`, // text in bold
+  });
+}
+
+/**
+support()
+the page that appears if the user enters the word "support"
+*/
+function support() {
+  setup(); //reset everything
+  $(`body`).css({
+    "background-color": `#cccccc`, // light gray background
+  });
+
+  $(`#answer`).text(`Cheer up! You can do it!`); // text that appears on the page
   // formatting of the text and answer box
   $(`#answer`).css({
     width: `35rem`,

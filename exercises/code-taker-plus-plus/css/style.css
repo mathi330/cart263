@@ -33,6 +33,9 @@ span::selection {
   /* the border of the box */
   border: 1px dashed black;
   font-size: 1.5rem;
+
+  text-align: center;
+  font-weight: bold;
 }
 
 /* if a letter is hovered over by the mouse (it applies to every letter that are not the answer) */
