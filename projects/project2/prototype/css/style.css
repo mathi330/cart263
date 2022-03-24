@@ -17,3 +17,12 @@ h2 {
   color: #ff0000;
   font-weight: bold;
 }
+
+#entry-box {
+  text-align: center;
+  padding-bottom: 10%;
+}
+
+#submit-answer {
+  margin: 10%;
+}
