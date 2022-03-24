@@ -146,9 +146,12 @@ function processResult(data) {
       listOfSelectedPos[i][0] + `:` + listOfPositions[selectedPosition]
     );
 
-    // display the code on the page
-    let codeString = listOfPositions[selectedPosition];
-    $(`#secret-code`).append(`${codeString}`);
+    // display the coded word on the page (the plus 1 is to start counting at 1 instead of 0 like in an array)
+    let codeString = `${listOfPositions[selectedPosition][0] + 1}:${
+      listOfPositions[selectedPosition][1] + 1
+    }`;
+    // add the string to the paragraph
+    $(`#secret-code`).append(`${codeString} <br/>`);
   }
   // add the lorem ipsum text
   addLoremIpsum(listOfSelectedPos);
