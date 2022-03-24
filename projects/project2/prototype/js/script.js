@@ -94,14 +94,164 @@ const loremIpsumText = [
   `Etiam feugiat facilysis tincidunt.`,
 ];
 
-addLoremIpsum();
+let jsonFile = undefined;
+let chosenWord = `a`;
+let minWordLength = 6;
 
-function addLoremIpsum() {
+// add a json file with words from which the mystery word will be taken
+$.getJSON(`/assets/data/common.json`).done(function data(data) {
+  // function to call when the file is loaded successfully
+  jsonFile = data;
+  processResult(jsonFile);
+});
+
+/**
+processResult(data)
+
+choose a random word from the json file,
+separates the word into letters and finds all the times each letter is appears in the lorem ipsum text,
+choose one of the positions in the text,
+add the lorem ipsum text
+*/
+function processResult(data) {
+  // choose a word that is longer than the minimum word length
+  while (chosenWord.length < minWordLength) {
+    chosenWord =
+      data.commonWords[Math.floor(Math.random() * data.commonWords.length)];
+  }
+
+  console.log(chosenWord); // show the word in the console
+
+  let listOfSelectedPos = []; // empty array in which the chosen positions for the letters will be put
+
+  // for each letter of the word
+  for (let i = 0; i < chosenWord.length; i++) {
+    // list of the positions for all the times the letter appears in the lorem ipsum
+    let listOfPositions = findCharacterPos(chosenWord[i]);
+    // console.log(listOfPositions);
+
+    // choose a random position from the listOfPositions array for this letter of the word
+    let selectedPosition = Math.floor(Math.random() * listOfPositions.length);
+    // add the letter and it's position in the lorem ipsum to the array for the final chosen position
+    listOfSelectedPos.push([chosenWord[i], listOfPositions[selectedPosition]]);
+    // show the position of the letter
+    console.log(`letter position` + `:` + listOfPositions[selectedPosition]);
+  }
+  // add the lorem ipsum text
+  addLoremIpsum(listOfSelectedPos);
+}
+
+/**
+findCharacterPos(char)
+
+find all the appearances of the letter of the word in the lorem ipsum text
+*/
+function findCharacterPos(char) {
+  // array of all the positions of the letter in the text
+  let posList = [];
+  let nextPos = 0;
+
+  // for each coordinates of the lorem ipsum array (for each paragraph)
+  for (let i = 0; i < loremIpsumText.length; i++) {
+    // variable for the paragraph beeing looked at
+    let myP = loremIpsumText[i];
+    nextPos = 0;
+    // nextPos will return -1 if it doesn't find the letter, so as long as it is positive continue searching for the letter
+    while (nextPos >= 0) {
+      // find the letter we're looking at in the paragraph we're looking at
+      nextPos = myP.indexOf(char, nextPos);
+      // if the letter is found
+      if (nextPos >= 0) {
+        // push the coordinates of the letter at the end of the array of positions
+        posList.push([i, nextPos]);
+        // add one to nextPos
+        nextPos++;
+      }
+    }
+  }
+
+  // return the list of positions so we can access it
+  return posList;
+}
+
+/**
+addLoremIpsum(listOfLetterPos)\
+
+display the lorem ipsum text and add a span around the letter that we'll use in the book cipher
+*/
+function addLoremIpsum(listOfLetterPos) {
+  // sort the letters in order of appearance in the paragraph
+  let letterOrder = listOfLetterPos.sort(function (a, b) {
+    // if the first letter is positioned in the paragraph before the second one,
+    if (a[1][0] < b[1][0]) {
+      // don't change order
+      return -1;
+    }
+    // if the first letter is positioned in the paragraph after the second one,
+    else if (a[1][0] > b[1][0]) {
+      // change order
+      return 1;
+    }
+    // if they are both in the same paragraph, look at their positions in the paragraph
+    // if the first letter is before the second one in the paragraph
+    else if (a[1][0] === b[1][0] && a[1][1] < b[1][1]) {
+      // don't change the order
+      return -1;
+    }
+    // if the first letter is after the second one in the paragraph
+    else if (a[1][0] === b[1][0] && a[1][1] > b[1][1]) {
+      // change the order
+      return 1;
+    }
+    // if both letters are the same at the same coordinates
+    else {
+      return 0;
+    }
+  });
+
+  // section in the html to which we want to add the text
   const sectionText = $(`#lorem-ipsum`);
 
+  // for each paragraph of lorem ipsum
   for (let i = 0; i < loremIpsumText.length; i++) {
+    // letter order in the paragraph
+    let letterPosForP = [];
+    // the paragraph string
+    let paragraphString = ``;
+
+    // for each letter of the word (in order of appearance in the text)
+    for (let j = 0; j < letterOrder.length; j++) {
+      // if the letter position is in the paragraph we are looking at
+      if (letterOrder[j][1][0] === i) {
+        // add that letter to the array of the paragraph
+        letterPosForP.push(letterOrder[j]);
+      }
+    }
+
+    // variable for the position of the character in the string
+    let previousStart = 0;
+
+    // for each letter of the word in that paragraph
+    for (let j = 0; j < letterPosForP.length; j++) {
+      // set the paragraph string to
+      // all the lorem ipsum text that comes between the beginning of the <p> (or the previous letter that is inside this <p>) and our letter
+      // add our letter inside a span tag with a class of word
+      paragraphString +=
+        loremIpsumText[i].slice(previousStart, letterOrder[j][1][1]) +
+        `<span class="word">${letterOrder[j][0]}</span>`;
+
+      // set previous start to the character after our letter
+      previousStart = letterOrder[j][1][1] + 1;
+    }
+    // finish the paragraph with everything that comes after our last letter form that <p> and the end of the <p>
+    paragraphString += loremIpsumText[i].slice(previousStart);
+
+    // create an html paragraph
     const paragraph = $(`<p></p>`);
-    paragraph.text(`${loremIpsumText[i]}`);
+
+    // add our paragraphString to the html <p>
+    paragraph.append(`${paragraphString}`);
+    // add that <p> to the html section
     sectionText.append(paragraph);
   }
 }
