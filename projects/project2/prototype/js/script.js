@@ -45,7 +45,9 @@ let chosenWord = `a`;
 let minWordLength = 6; // the minimum length the chosen word should be
 
 // add a json file with words from which the mystery word will be taken
-$.getJSON(`/assets/data/common.json`).done(function data(data) {
+$.getJSON(
+  `https://raw.githubusercontent.com/mathi330/cart263/main/projects/project2/prototype/assets/data/common.json`
+).done(function data(data) {
   // function to call when the file is loaded successfully
   jsonFile = data;
   processResult(jsonFile);
