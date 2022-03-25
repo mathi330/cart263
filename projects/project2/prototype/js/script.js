@@ -42,7 +42,7 @@ const loremIpsumText = [
 
 let jsonFile = undefined;
 let chosenWord = `a`;
-let minWordLength = 6;
+let minWordLength = 6; // the minimum length the chosen word should be
 
 // add a json file with words from which the mystery word will be taken
 $.getJSON(`/assets/data/common.json`).done(function data(data) {
@@ -66,6 +66,34 @@ $(function () {
     autoOpen: false, // doesn't open at the start
     height: 300,
     width: 300,
+  });
+});
+
+// see if the hints are visible
+let hintHidden = true;
+// set up the dialog box for the lorem ipsum text and the hint button
+$(function () {
+  $(`#text`).dialog({
+    autoOpen: false, // doesn't open at the start
+    // hint button
+    buttons: [
+      {
+        text: "Hint",
+        // what happens when it is clicked
+        click: function () {
+          // if the hints are hidden,
+          if (hintHidden) {
+            $(`.word`).addClass(`hint`, 1000); // make the hints visible with a smooth transition
+            hintHidden = false; // set the variable to false (the hints are not hidden)
+          }
+          // if the hints are not hidden
+          else {
+            $(`.hint`).removeClass(`hint`, 1000); // make the hints invisble with a smooth transition
+            hintHidden = true; // set the variable to true (the hints are hidden)
+          }
+        },
+      },
+    ],
   });
 });
 
@@ -112,6 +140,18 @@ $(`#submit-answer`).on(`click`, function (event) {
   }
 });
 
+//
+$(`#letter-hint`).on(`click`, function (event) {
+  let hintVisible = false;
+  if (hintVisible) {
+    $(`.word`).removeClass("hint", 1000);
+    hintVisible = false;
+  } else {
+    $(`.word`).addClass("hint", 1000);
+    hintVisible = true;
+  }
+});
+
 /**
 processResult(data)
 
@@ -133,14 +173,15 @@ function processResult(data) {
 
   // for each letter of the word
   for (let i = 0; i < chosenWord.length; i++) {
+    let letter = chosenWord[i];
     // list of the positions for all the times the letter appears in the lorem ipsum
-    let listOfPositions = findCharacterPos(chosenWord[i]);
+    let listOfPositions = findCharacterPos(letter);
     // console.log(listOfPositions);
 
     // choose a random position from the listOfPositions array for this letter of the word
     let selectedPosition = Math.floor(Math.random() * listOfPositions.length);
     // add the letter and it's position in the lorem ipsum to the array for the final chosen position
-    listOfSelectedPos.push([chosenWord[i], listOfPositions[selectedPosition]]);
+    listOfSelectedPos.push([letter, listOfPositions[selectedPosition]]);
     // show the position of the letter
     console.log(
       listOfSelectedPos[i][0] + `:` + listOfPositions[selectedPosition]
@@ -233,7 +274,7 @@ function addLoremIpsum(listOfLetterPos) {
     // letter order in the paragraph
     let letterPosForP = [];
     // the paragraph string
-    let paragraphString = ``;
+    let paragraphString = `${i + 1}. `;
 
     // for each letter of the word (in order of appearance in the text)
     for (let j = 0; j < letterOrder.length; j++) {
@@ -253,11 +294,11 @@ function addLoremIpsum(listOfLetterPos) {
       // all the lorem ipsum text that comes between the beginning of the <p> (or the previous letter that is inside this <p>) and our letter
       // add our letter inside a span tag with a class of word
       paragraphString +=
-        loremIpsumText[i].slice(previousStart, letterOrder[j][1][1]) +
-        `<span class="word">${letterOrder[j][0]}</span>`;
+        loremIpsumText[i].slice(previousStart, letterPosForP[j][1][1]) +
+        `<span class="word">${letterPosForP[j][0]}</span>`;
 
       // set previous start to the character after our letter
-      previousStart = letterOrder[j][1][1] + 1;
+      previousStart = letterPosForP[j][1][1] + 1;
     }
     // finish the paragraph with everything that comes after our last letter form that <p> and the end of the <p>
     paragraphString += loremIpsumText[i].slice(previousStart);
