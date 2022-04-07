@@ -33,6 +33,7 @@
     <section id="background-page">
       <input id="open-answer-dialog" type="button" value="Answer" />
       <input id="open-text-dialog" type="button" value="Text" />
+      <input id="open-clues-dialog" type="button" value="Clues" />
 
       <p id="secret-code"></p>
     </section>
@@ -45,11 +46,17 @@
     </section>
 
     <section id="answer">
-      <div id="entry-box">
+      <div id="entry-box" title="Answer">
         <h3>Type the secret message here:</h3>
         <input id="user-answer" type="text" />
-        <input id="submit-answer" type="button" value="Submit" />
       </div>
+    </section>
+
+    <section id="clues">
+      <div id="clue-dialog" title="???">
+        <!-- <input type="button" value="HElLo" /> -->
+      </div>
+      <!-- <div id="first-character" class="character-clues"></div> -->
     </section>
 
     <!-- My script(s) -->

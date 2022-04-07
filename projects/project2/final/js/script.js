@@ -43,6 +43,9 @@ const loremIpsumText = [
 let jsonFile = undefined;
 let chosenWord = `a`;
 let minWordLength = 6; // the minimum length the chosen word should be
+let maxWordLength = 10;
+
+let typesOfClues = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 // add a json file with words from which the mystery word will be taken
 $.getJSON(
@@ -53,30 +56,40 @@ $.getJSON(
   processResult(jsonFile);
 });
 
-// make the text into a dialog box
-$(function () {
-  $("#text").dialog({
-    autoOpen: false, // doesn't open at the start
-    height: 400,
-    width: 500,
-  });
-});
+// make the 2 dialog box open and close when the designated button is clicked
+openCloseDialog(`#open-text-dialog`, `#text`);
+openCloseDialog(`#open-answer-dialog`, `#entry-box`);
+openCloseDialog(`#open-clues-dialog`, `#clue-dialog`);
 
-// make the answer box into a dialog box
+/*******************************
+
+clues dialog box
+
+make the clue box into a dialog box
+
+*******************************/
 $(function () {
-  $("#entry-box").dialog({
-    autoOpen: false, // doesn't open at the start
-    height: 300,
+  $("#clue-dialog").dialog({
+    autoOpen: false,
+    height: 600,
     width: 300,
   });
 });
 
-// see if the hints are visible
+/*******************************
+
+text dialog box
+
+make the hints visible and invisible
+
+*******************************/
 let hintHidden = true;
 // set up the dialog box for the lorem ipsum text and the hint button
 $(function () {
   $(`#text`).dialog({
     autoOpen: false, // doesn't open at the start
+    height: 400,
+    width: 500,
     // hint button
     buttons: [
       {
@@ -99,35 +112,41 @@ $(function () {
   });
 });
 
-// make the 2 dialog box open and close when the designated button is clicked
-openCloseDialog(`#open-text-dialog`, `#text`);
-openCloseDialog(`#open-answer-dialog`, `#entry-box`);
+$(`#letter-hint`).on(`click`, function (event) {
+  let hintVisible = false;
+  if (hintVisible) {
+    $(`.word`).removeClass("hint", 1000);
+    hintVisible = false;
+  } else {
+    $(`.word`).addClass("hint", 1000);
+    hintVisible = true;
+  }
+});
 
-/**
-openCloseDialog(button, dialogBox)
+/*******************************
 
-function to open and close a dialog box when its designated button is clicked
-*/
-function openCloseDialog(button, dialogBox) {
-  let textHidden = true; // see if the dialog is displayed
+answer dialog box
 
-  // when the button is clicked
-  $(button).on(`click`, function (event) {
-    // if the dialog box is closed
-    if (textHidden) {
-      $(dialogBox).dialog("open"); // open it
-      textHidden = false;
-    }
-    // if the dialog box is open
-    else {
-      $(dialogBox).dialog("close"); // close it
-      textHidden = true;
-    }
+make the answer box into a dialog box
+
+*******************************/
+$(function () {
+  $("#entry-box").dialog({
+    autoOpen: false, // doesn't open at the start
+    height: 300,
+    width: 300,
+
+    buttons: [
+      {
+        text: `Submit`,
+        click: submitAnswer,
+      },
+    ],
   });
-}
+});
 
 // look at the answer the user inputed into the answer box when the submit button is pressed
-$(`#submit-answer`).on(`click`, function (event) {
+function submitAnswer() {
   // the user's answer
   let userAnswer = $(`#user-answer`).val();
   // if the answer is correct
@@ -140,19 +159,12 @@ $(`#submit-answer`).on(`click`, function (event) {
     // alert with "Wrong!" (for now)
     alert(`Wrong!`);
   }
-});
+}
 
-//
-$(`#letter-hint`).on(`click`, function (event) {
-  let hintVisible = false;
-  if (hintVisible) {
-    $(`.word`).removeClass("hint", 1000);
-    hintVisible = false;
-  } else {
-    $(`.word`).addClass("hint", 1000);
-    hintVisible = true;
-  }
-});
+/*******************************
+
+
+*******************************/
 
 /**
 processResult(data)
@@ -164,7 +176,10 @@ add the lorem ipsum text
 */
 function processResult(data) {
   // choose a word that is longer than the minimum word length
-  while (chosenWord.length < minWordLength) {
+  while (
+    chosenWord.length < minWordLength ||
+    chosenWord.length > maxWordLength
+  ) {
     chosenWord =
       data.commonWords[Math.floor(Math.random() * data.commonWords.length)];
   }
@@ -176,6 +191,9 @@ function processResult(data) {
   // for each letter of the word
   for (let i = 0; i < chosenWord.length; i++) {
     let letter = chosenWord[i];
+
+    let clue = typesOfClues[i];
+
     // list of the positions for all the times the letter appears in the lorem ipsum
     let listOfPositions = findCharacterPos(letter);
     // console.log(listOfPositions);
@@ -183,7 +201,7 @@ function processResult(data) {
     // choose a random position from the listOfPositions array for this letter of the word
     let selectedPosition = Math.floor(Math.random() * listOfPositions.length);
     // add the letter and it's position in the lorem ipsum to the array for the final chosen position
-    listOfSelectedPos.push([letter, listOfPositions[selectedPosition]]);
+    listOfSelectedPos.push([letter, listOfPositions[selectedPosition], clue]);
     // show the position of the letter
     console.log(
       listOfSelectedPos[i][0] + `:` + listOfPositions[selectedPosition]
@@ -194,11 +212,56 @@ function processResult(data) {
       listOfPositions[selectedPosition][1] + 1
     }`;
     // add the string to the paragraph
-    $(`#secret-code`).append(`${codeString} <br/>`);
+    // $(`#clue-dialog`).append(`${codeString} <br/>`);
+    // $(`#clue-dialog`).append(`?? ?? <br/>`);
   }
   // add the lorem ipsum text
   addLoremIpsum(listOfSelectedPos);
+
+  createClues();
 }
+
+/*
+https://www.intechgrity.com/howto-use-jquery-ui-dialog-as-reusable-modal-prompt/#
+*/
+function createClues() {
+  let allCluesButtons = [];
+  let allClues = [];
+  // newClue.addClass(`visible`);
+
+  for (let i = 0; i < chosenWord.length; i++) {
+    let $buttonForClue = $(`<button></button>`);
+    let $newClue = $(`<div></div>`);
+
+    $buttonForClue.text(`Clue ${i + 1}`); // text in button
+    $buttonForClue.addClass(`button-for-clues`);
+    $newClue.addClass(`character-clue-dialogs`);
+
+    allCluesButtons.push($buttonForClue);
+    allClues.push($newClue);
+    $(`#clue-dialog`).append($buttonForClue);
+    $(`#clue-dialog`).append($newClue);
+    $(`#clue-dialog`).append(`?? ?? <br/>`);
+  }
+
+  $(`.button-for-clues`).each(function () {
+    let $clueDialog;
+
+    $clueDialog = $(this)
+      .next("div.character-clue-dialogs")
+      .dialog({ autoOpen: false, height: 400, width: 400 });
+    openCloseDialog(this, $clueDialog);
+  });
+
+  $(`#clues-dialog`).append(allCluesButtons);
+  $(`#clues-dialog`).append(allClues);
+  console.log(allClues);
+}
+
+/*******************************
+
+
+*******************************/
 
 /**
 findCharacterPos(char)
@@ -313,4 +376,29 @@ function addLoremIpsum(listOfLetterPos) {
     // add that <p> to the html section
     sectionText.append(paragraph);
   }
+}
+
+/*******************************
+
+openCloseDialog(button, dialogBox)
+
+function to open and close a dialog box when its designated button is clicked
+
+*******************************/
+function openCloseDialog(button, dialogBox) {
+  let textHidden = true; // see if the dialog is displayed
+
+  // when the button is clicked
+  $(button).on(`click`, function (event) {
+    // if the dialog box is closed
+    if (textHidden) {
+      $(dialogBox).dialog("open", "moveToTop"); // open it
+      textHidden = false;
+    }
+    // if the dialog box is open
+    else {
+      $(dialogBox).dialog("close"); // close it
+      textHidden = true;
+    }
+  });
 }
