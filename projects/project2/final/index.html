@@ -27,30 +27,34 @@
       integrity="sha256-eTyxS0rkjpLEo16uXTS0uVCS4815lc40K2iVpWDvdSY="
       crossorigin="anonymous"
     ></script>
+    <script src="js/libraries/p5.min.js"></script>
+    <script src="js/libraries/p5.sound.min.js"></script>
   </head>
 
   <body>
     <section id="background-page">
-      <input id="open-answer-dialog" type="button" value="Answer" />
-      <input id="open-text-dialog" type="button" value="Text" />
-      <input id="open-clues-dialog" type="button" value="Clues" />
+      <input id="starting-button" type="button" value="Start" />
 
       <p id="secret-code"></p>
     </section>
 
     <section id="lorem-ipsum">
-      <div id="text" title="Text">
-        <!-- <input id="letter-hint" type="button" value="Hint" /> -->
+      <div id="the-text" title="Text">
         <h2 id="title">Book Cipher</h2>
+        <div id="text"></div>
+        <br /><br />
+        <hr />
+        <br /><br />
+        <div id="answer">
+          <h3>Type the secret message here:</h3>
+          <input id="user-answer" type="text" />
+        </div>
       </div>
     </section>
 
-    <section id="answer">
-      <div id="entry-box" title="Answer">
-        <h3>Type the secret message here:</h3>
-        <input id="user-answer" type="text" />
-      </div>
-    </section>
+    <!-- <section id="answer">
+      <div id="entry-box" title="Answer"></div>
+    </section> -->
 
     <section id="clues">
       <div id="clue-dialog" title="???">
@@ -61,5 +65,6 @@
 
     <!-- My script(s) -->
     <script src="js/script.js"></script>
+    <!-- <script src="js/p5number1.js"></script> -->
   </body>
 </html>

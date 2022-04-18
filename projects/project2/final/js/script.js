@@ -46,6 +46,8 @@ let minWordLength = 6; // the minimum length the chosen word should be
 let maxWordLength = 10;
 
 let typesOfClues = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+let reorganizedTypes = [];
+// shuffleArray();
 
 // add a json file with words from which the mystery word will be taken
 $.getJSON(
@@ -57,9 +59,27 @@ $.getJSON(
 });
 
 // make the 2 dialog box open and close when the designated button is clicked
-openCloseDialog(`#open-text-dialog`, `#text`);
-openCloseDialog(`#open-answer-dialog`, `#entry-box`);
-openCloseDialog(`#open-clues-dialog`, `#clue-dialog`);
+openCloseDialog(`#starting-button`, `#the-text`);
+openCloseDialog(`#starting-button`, `#clue-dialog`);
+
+/*******************************
+p5 canvas for the clues
+ *******************************/
+function setup() {
+  let ellipseSize = 10;
+
+  let canvas = createCanvas(300, 300);
+  canvas.parent(`type-of-clue1`);
+
+  background(0, 0, 0);
+  fill(0, 255, 255);
+  ellipse(0 + ellipseSize, 0 + ellipseSize, ellipseSize);
+  ellipse(0 + ellipseSize, height - ellipseSize, ellipseSize);
+  ellipse(width - ellipseSize, height - ellipseSize, ellipseSize);
+  ellipse(width - ellipseSize, 0 + ellipseSize, ellipseSize);
+}
+/*******************************
+ *******************************/
 
 /*******************************
 
@@ -71,7 +91,7 @@ make the clue box into a dialog box
 $(function () {
   $("#clue-dialog").dialog({
     autoOpen: false,
-    height: 600,
+    height: `auto`,
     width: 300,
   });
 });
@@ -86,11 +106,11 @@ make the hints visible and invisible
 let hintHidden = true;
 // set up the dialog box for the lorem ipsum text and the hint button
 $(function () {
-  $(`#text`).dialog({
+  $(`#the-text`).dialog({
     autoOpen: false, // doesn't open at the start
     height: 400,
     width: 500,
-    // hint button
+    // buttons
     buttons: [
       {
         text: "Hint",
@@ -108,6 +128,7 @@ $(function () {
           }
         },
       },
+      { text: `Submit`, click: submitAnswer },
     ],
   });
 });
@@ -233,15 +254,16 @@ function createClues() {
     let $buttonForClue = $(`<button></button>`);
     let $newClue = $(`<div></div>`);
 
-    $buttonForClue.text(`Clue ${i + 1}`); // text in button
+    $buttonForClue.text(`?? ??`); // text in button
     $buttonForClue.addClass(`button-for-clues`);
     $newClue.addClass(`character-clue-dialogs`);
+    $newClue.attr("id", `type-of-clue${i + 1}`);
 
     allCluesButtons.push($buttonForClue);
     allClues.push($newClue);
     $(`#clue-dialog`).append($buttonForClue);
     $(`#clue-dialog`).append($newClue);
-    $(`#clue-dialog`).append(`?? ?? <br/>`);
+    $(`#clue-dialog`).append(`<br/>`);
   }
 
   $(`.button-for-clues`).each(function () {
@@ -401,4 +423,39 @@ function openCloseDialog(button, dialogBox) {
       textHidden = true;
     }
   });
+}
+
+/*******************************
+create a new array with the types of clue to be organized differently
+ *******************************/
+// function shuffleArray() {
+//   for (let i = 0; i < typesOfClues; i++) {
+//     let newType = randomArrayPos(typesOfClues);
+//
+//     while (reorganizedTypes.includes(newType)) {
+//       newType = randomArrayPos(typesOfClues);
+//     }
+//     reorganizedTypes.push(newType);
+//   }
+//   console.log(`New organization of the types of clues: ${reorganizedTypes}`);
+// }
+
+/*******************************
+ *******************************/
+
+function p5Canvas() {
+  let $addScript = $(`<script></script>`);
+
+  $(`.type-of-clues1`).append($addScript);
+  $addScript.attr({
+    src: `js/p5number1.js`,
+  });
+}
+
+/*******************************
+ *******************************/
+
+function randomArrayPos(array) {
+  let i = Math.floor(Math.random(array.length));
+  return array[i];
 }
