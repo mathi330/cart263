@@ -43,10 +43,11 @@ const loremIpsumText = [
 let jsonFile = undefined;
 let chosenWord = `a`;
 let minWordLength = 6; // the minimum length the chosen word should be
-let maxWordLength = 10;
+let maxWordLength = 8;
 
 let typesOfClues = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-let reorganizedTypes = [];
+// let reorganizedTypes = [];
+let cipherClues = [];
 // shuffleArray();
 
 // add a json file with words from which the mystery word will be taken
@@ -63,25 +64,6 @@ openCloseDialog(`#starting-button`, `#the-text`);
 openCloseDialog(`#starting-button`, `#clue-dialog`);
 
 /*******************************
-p5 canvas for the clues
- *******************************/
-function setup() {
-  let ellipseSize = 10;
-
-  let canvas = createCanvas(300, 300);
-  canvas.parent(`type-of-clue1`);
-
-  background(0, 0, 0);
-  fill(0, 255, 255);
-  ellipse(0 + ellipseSize, 0 + ellipseSize, ellipseSize);
-  ellipse(0 + ellipseSize, height - ellipseSize, ellipseSize);
-  ellipse(width - ellipseSize, height - ellipseSize, ellipseSize);
-  ellipse(width - ellipseSize, 0 + ellipseSize, ellipseSize);
-}
-/*******************************
- *******************************/
-
-/*******************************
 
 clues dialog box
 
@@ -93,6 +75,10 @@ $(function () {
     autoOpen: false,
     height: `auto`,
     width: 300,
+    // position: [
+    //   Math.random() * $(window).width(),
+    //   Math.random() * $(window).height(),
+    // ],
   });
 });
 
@@ -223,19 +209,20 @@ function processResult(data) {
     let selectedPosition = Math.floor(Math.random() * listOfPositions.length);
     // add the letter and it's position in the lorem ipsum to the array for the final chosen position
     listOfSelectedPos.push([letter, listOfPositions[selectedPosition], clue]);
-    // show the position of the letter
-    console.log(
-      listOfSelectedPos[i][0] + `:` + listOfPositions[selectedPosition]
-    );
 
     // display the coded word on the page (the plus 1 is to start counting at 1 instead of 0 like in an array)
     let codeString = `${listOfPositions[selectedPosition][0] + 1}:${
       listOfPositions[selectedPosition][1] + 1
     }`;
-    // add the string to the paragraph
-    // $(`#clue-dialog`).append(`${codeString} <br/>`);
-    // $(`#clue-dialog`).append(`?? ?? <br/>`);
+
+    // show the position of the letter
+    console.log(listOfSelectedPos[i][0] + ` => ` + codeString);
+
+    cipherClues.push(codeString);
   }
+
+  console.log(`the cipher array: ` + cipherClues);
+
   // add the lorem ipsum text
   addLoremIpsum(listOfSelectedPos);
 
@@ -281,9 +268,82 @@ function createClues() {
 }
 
 /*******************************
+p5 canvas for the clues
+ *******************************/
 
+let s1 = function (sketch) {
+  sketch.setup = function () {
+    let canvas1 = sketch.createCanvas(363, 300);
+    canvas1.parent(`type-of-clue1`);
+    sketch.background(255, 0, 0);
+  };
 
-*******************************/
+  sketch.draw = function () {};
+};
+new p5(s1);
+
+let s2 = function (sketch) {
+  sketch.setup = function () {
+    let canvas2 = sketch.createCanvas(363, 300);
+    canvas2.parent(`type-of-clue2`);
+    sketch.background(0, 255, 0);
+  };
+  sketch.draw = function () {};
+};
+new p5(s2);
+
+let s3 = function (sketch) {
+  sketch.setup = function () {
+    let canvas3 = sketch.createCanvas(363, 300);
+    canvas3.parent(`type-of-clue3`);
+    sketch.background(0, 0, 255);
+  };
+  sketch.draw = function () {};
+};
+new p5(s3);
+
+let s4 = function (sketch) {
+  sketch.setup = function () {
+    let canvas4 = sketch.createCanvas(363, 300);
+    canvas4.parent(`type-of-clue4`);
+    sketch.background(255, 255, 0);
+  };
+  sketch.draw = function () {};
+};
+new p5(s4);
+
+let s5 = function (sketch) {
+  sketch.setup = function () {
+    let canvas5 = sketch.createCanvas(363, 300);
+    canvas5.parent(`type-of-clue5`);
+    sketch.background(255, 0, 255);
+  };
+  sketch.draw = function () {};
+};
+new p5(s5);
+
+let s6 = function (sketch) {
+  sketch.setup = function () {
+    let canvas6 = sketch.createCanvas(363, 300);
+    canvas6.parent(`type-of-clue6`);
+    sketch.background(0, 255, 255);
+  };
+  sketch.draw = function () {};
+};
+new p5(s6);
+
+let s7 = function (sketch) {
+  sketch.setup = function () {
+    let canvas7 = sketch.createCanvas(363, 300);
+    canvas7.parent(`type-of-clue7`);
+    sketch.background(0, 0, 0);
+  };
+  sketch.draw = function () {};
+};
+new p5(s7);
+
+/*******************************
+ *******************************/
 
 /**
 findCharacterPos(char)
@@ -422,33 +482,6 @@ function openCloseDialog(button, dialogBox) {
       $(dialogBox).dialog("close"); // close it
       textHidden = true;
     }
-  });
-}
-
-/*******************************
-create a new array with the types of clue to be organized differently
- *******************************/
-// function shuffleArray() {
-//   for (let i = 0; i < typesOfClues; i++) {
-//     let newType = randomArrayPos(typesOfClues);
-//
-//     while (reorganizedTypes.includes(newType)) {
-//       newType = randomArrayPos(typesOfClues);
-//     }
-//     reorganizedTypes.push(newType);
-//   }
-//   console.log(`New organization of the types of clues: ${reorganizedTypes}`);
-// }
-
-/*******************************
- *******************************/
-
-function p5Canvas() {
-  let $addScript = $(`<script></script>`);
-
-  $(`.type-of-clues1`).append($addScript);
-  $addScript.attr({
-    src: `js/p5number1.js`,
   });
 }
 
