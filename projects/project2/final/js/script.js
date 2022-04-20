@@ -48,7 +48,7 @@ let maxWordLength = 6;
 let typesOfClues = [0, 1, 2, 3, 4, 5];
 let cipherClues = [];
 
-let state = [`game`, `game`, `game`, `game`, `game`, `game`, `game`, `game`];
+let state = [`game`, `game`, `game`, `game`, `game`, `game`];
 
 // add a json file with words from which the mystery word will be taken
 $.getJSON(
@@ -222,127 +222,149 @@ let s1 = function (sketch) {
 };
 new p5(s1);
 
-// let s2 = function (p) {
-//   // Current state of program
-//   let clueState = `loading`; // loading, running
-//   // User's webcam
-//   let video;
-//   // The name of our model
-//   let modelName = `CocoSsd`;
-//   // ObjectDetector object (using the name of the model for clarify)
-//   let cocossd;
-//   // The current set of predictions made by CocoSsd once it's running
-//   let predictions = [];
-//
-//   /**
-// Starts the webcam and the ObjectDetector
-// */
-//   p.setup = function () {
-//     let canvas2 = p.createCanvas(640, 480);
-//     canvas2.parent(`type-of-clue2`);
-//
-//     // Start webcam and hide the resulting HTML element
-//     video = p.createCapture(p.VIDEO);
-//     video.hide();
-//
-//     // Start the CocoSsd model and when it's ready start detection
-//     // and switch to the running state
-//     cocossd = ml5.objectDetector("cocossd", {}, function () {
-//       // Ask CocoSsd to start detecting objects, calls gotResults
-//       // if it finds something
-//       cocossd.detect(video, p.gotResults);
-//       // Switch to the running state
-//       clueState = `running`;
-//     });
-//   };
-//
-//   /**
-// Called when CocoSsd has detected at least one object in the video feed
-// */
-//   p.gotResults = function (err, results) {
-//     // If there's an error, report it
-//     if (err) {
-//       console.error(err);
-//     }
-//     // Otherwise, save the results into our predictions array
-//     else {
-//       predictions = results;
-//     }
-//     // Ask CocoSsd to detect objects again so it's continuous
-//     cocossd.detect(video, p.gotResults);
-//   };
-//
-//   /**
-// Handles the two states of the program: loading, running
-// */
-//   p.draw = function () {
-//     if (clueState === `loading`) {
-//       p.loading();
-//     } else if (clueState === `running`) {
-//       p.running();
-//     }
-//   };
-//
-//   /**
-// Displays a simple loading screen with the loading model's name
-// */
-//   p.loading = function () {
-//     p.background(255);
-//
-//     p.push();
-//     p.textSize(32);
-//     p.textStyle(BOLD);
-//     p.textAlign(CENTER, CENTER);
-//     p.text(`Loading...`, p.width / 2, p.height / 2);
-//     p.pop();
-//   };
-//
-//   /**
-// Displays the webcam.
-// If there are currently objects detected it outlines them and labels them
-// with the name and confidence value.
-// */
-//   p.running = function () {
-//     // Display the webcam
-//     p.image(video, 0, 0, p.width, p.height);
-//
-//     // Check if there currently predictions to display
-//     if (predictions) {
-//       // If so run through the array of predictions
-//       for (let i = 0; i < predictions.length; i++) {
-//         // Get the object predicted
-//         let object = predictions[i];
-//         // Highlight it on the canvas
-//         p.highlightObject(object);
-//       }
-//     }
-//   };
-//
-//   /**
-// Provided with a detected object it draws a box around it and includes its
-// label and confidence value
-// */
-//   p.highlightObject = function (object) {
-//     // Display a box around it
-//     p.push();
-//     p.noFill();
-//     p.stroke(255, 255, 0);
-//     p.rect(object.x, object.y, object.width, object.height);
-//     p.pop();
-//     // Display the label and confidence in the center of the box
-//     p.push();
-//     p.textSize(18);
-//     p.fill(255, 255, 0);
-//     p.textAlign(CENTER, CENTER);
-//     p.text(
-//       `${object.label}, ${object.confidence.toFixed(2)}`,
-//       object.x + object.width / 2,
-//       object.y + object.height / 2
-//     );
-//     p.pop();
-//   };
-// };
-// new p5(s2);
+/*
+code taken from pippin's class on object detection with ml5.js
+*/
+let s2 = function (p) {
+  // Current state of program
+  let clueState = `loading`; // loading, running
+  // User's webcam
+  let video;
+  // The name of our model
+  let modelName = `CocoSsd`;
+  // ObjectDetector object (using the name of the model for clarify)
+  let cocossd;
+  // The current set of predictions made by CocoSsd once it's running
+  let predictions = [];
+
+  /**
+Starts the webcam and the ObjectDetector
+*/
+  p.setup = function () {
+    let canvas2 = p.createCanvas(563, 400);
+    canvas2.parent(`type-of-clue2`);
+
+    if (state[1] === `game`) {
+      // Start webcam and hide the resulting HTML element
+      video = p.createCapture(p.VIDEO);
+      video.hide();
+
+      // Start the CocoSsd model and when it's ready start detection
+      // and switch to the running state
+      cocossd = ml5.objectDetector("cocossd", {}, function () {
+        // Ask CocoSsd to start detecting objects, calls gotResults
+        // if it finds something
+        cocossd.detect(video, p.gotResults);
+        // Switch to the running state
+        clueState = `running`;
+      });
+    }
+  };
+
+  /**
+Called when CocoSsd has detected at least one object in the video feed
+*/
+  p.gotResults = function (err, results) {
+    // If there's an error, report it
+    if (err) {
+      console.error(err);
+    }
+    // Otherwise, save the results into our predictions array
+    else {
+      predictions = results;
+    }
+    // Ask CocoSsd to detect objects again so it's continuous
+    cocossd.detect(video, p.gotResults);
+  };
+
+  /**
+Handles the two states of the program: loading, running
+*/
+  p.draw = function () {
+    if (state[1] === `game`) {
+      if (clueState === `loading`) {
+        p.loading();
+      } else if (clueState === `running`) {
+        p.running();
+      }
+    } else if (state[1] === `found`) {
+      video.remove();
+      p.background(0, 0, 0);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textSize(30);
+      p.fill(255);
+      p.text(`${cipherClues[1]}`, p.width / 2, p.height / 2);
+      console.log(`${cipherClues[1]}`);
+      p.noLoop();
+    }
+  };
+
+  /**
+Displays a simple loading screen with the loading model's name
+*/
+  p.loading = function () {
+    p.background(255);
+
+    p.push();
+    p.textSize(32);
+    p.textStyle(p.BOLD);
+    p.textAlign(p.CENTER, p.CENTER);
+    p.text(`Loading...`, p.width / 2, p.height / 2);
+    p.pop();
+  };
+
+  /**
+Displays the webcam.
+If there are currently objects detected it outlines them and labels them
+with the name and confidence value.
+*/
+  p.running = function () {
+    // Display the webcam
+    p.image(video, 0, 0, p.width, p.height);
+
+    // Check if there currently predictions to display
+    if (predictions) {
+      // If so run through the array of predictions
+      for (let i = 0; i < predictions.length; i++) {
+        // Get the object predicted
+        let object = predictions[i];
+        // Highlight it on the canvas
+        p.highlightObject(object);
+
+        if (object.label === `book`) {
+          state[1] = `found`;
+        }
+      }
+    }
+  };
+
+  /**
+Provided with a detected object it draws a box around it and includes its
+label and confidence value
+*/
+  p.highlightObject = function (object) {
+    // Display a box around it
+    p.push();
+    p.noFill();
+    p.stroke(0, 255, 255);
+    p.rect(object.x, object.y, object.width, object.height);
+    p.pop();
+    // Display the label and confidence in the center of the box
+    p.push();
+    p.textSize(20);
+    p.textStyle(p.BOLD);
+    p.fill(0, 255, 255);
+    p.textAlign(p.CENTER, p.CENTER);
+    p.text(
+      `${object.label}`,
+      object.x + object.width / 2,
+      object.y + object.height / 2
+    );
+    p.pop();
+  };
+};
+
+new p5(s2);
 
 let s3 = function (sketch) {
   let numfoods = 15;
@@ -950,6 +972,19 @@ function createClues() {
       .next("div.character-clue-dialogs")
       .dialog({ autoOpen: false, height: 500, width: 600 });
     openCloseDialog(this, $clueDialog);
+    // if (
+    //   $($clueDialog) === $(`#button-clue2`) &&
+    //   textHidden &&
+    //   state[1] !== `found`
+    // ) {
+    //   state[1] = `wait`;
+    // } else if (
+    //   $($clueDialog) === $(`#button-clue2`) &&
+    //   textHidden === false &&
+    //   state[1] !== `found`
+    // ) {
+    //   state[1] = `game`;
+    // }
   });
 
   $(`#clues-dialog`).append(allCluesButtons);
