@@ -377,12 +377,12 @@ let s3 = function (sketch) {
 
   sketch.createfood = function () {
     let foodSize = 10;
-    let xPos = sketch.random(0 + foodSize, sketch.width - foodSize);
-    let yPos = sketch.random(0 + foodSize, sketch.height - foodSize);
+    let xPos = sketch.random(0 + 20, sketch.width - 20);
+    let yPos = sketch.random(0 + 20, sketch.height - 20);
     let d = sketch.dist(user.x, user.y, xPos, yPos);
     while (d < user.size) {
-      xPos = sketch.random(0 + foodSize, sketch.width - foodSize);
-      yPos = sketch.random(0 + foodSize, sketch.height - foodSize);
+      xPos = sketch.random(0 + 20, sketch.width - 20);
+      yPos = sketch.random(0 + 20, sketch.height - 20);
     }
     let food = {
       x: xPos,
@@ -410,11 +410,12 @@ let s3 = function (sketch) {
       sketch.fill(255);
       sketch.text(`${cipherClues[2]}`, sketch.width / 2, sketch.height / 2);
       console.log(`${cipherClues[2]}`);
+      sketch.noLoop();
     }
   };
 
   sketch.game = function () {
-    sketch.background(255);
+    sketch.background(243, 230, 255);
 
     if (sketch.keyIsDown(sketch.RIGHT_ARROW)) {
       user.x += user.speed;
@@ -473,13 +474,248 @@ let s3 = function (sketch) {
 };
 new p5(s3);
 
-let s4 = function (sketch) {
-  sketch.setup = function () {
-    let canvas4 = sketch.createCanvas(363, 300);
-    canvas4.parent(`type-of-clue4`);
-    sketch.background(255, 255, 0);
+/*
+code partially taken from exercise slamina
+*/
+let s4 = function (p) {
+  // An array of animal names from
+  // https://github.com/dariusk/corpora/blob/master/data/animals/common.json
+  const animals = [
+    "aardvark",
+    "alligator",
+    "alpaca",
+    "antelope",
+    "ape",
+    "armadillo",
+    "baboon",
+    "badger",
+    "bat",
+    "bear",
+    "beaver",
+    "bison",
+    "boar",
+    "buffalo",
+    "bull",
+    "camel",
+    "canary",
+    "capybara",
+    "cat",
+    "chameleon",
+    "cheetah",
+    "chimpanzee",
+    "chinchilla",
+    "chipmunk",
+    "cougar",
+    "cow",
+    "coyote",
+    "crocodile",
+    "crow",
+    "deer",
+    "dingo",
+    "dog",
+    "donkey",
+    "dromedary",
+    "elephant",
+    "elk",
+    "ewe",
+    "ferret",
+    "finch",
+    "fish",
+    "fox",
+    "frog",
+    "gazelle",
+    "gila monster",
+    "giraffe",
+    "gnu",
+    "goat",
+    "gopher",
+    "gorilla",
+    "grizzly bear",
+    "ground hog",
+    "guinea pig",
+    "hamster",
+    "hedgehog",
+    "hippopotamus",
+    "hog",
+    "horse",
+    "hyena",
+    "ibex",
+    "iguana",
+    "impala",
+    "jackal",
+    "jaguar",
+    "kangaroo",
+    "koala",
+    "lamb",
+    "lemur",
+    "leopard",
+    "lion",
+    "lizard",
+    "llama",
+    "lynx",
+    "mandrill",
+    "marmoset",
+    "mink",
+    "mole",
+    "mongoose",
+    "monkey",
+    "moose",
+    "mountain goat",
+    "mouse",
+    "mule",
+    "muskrat",
+    "mustang",
+    "mynah bird",
+    "newt",
+    "ocelot",
+    "opossum",
+    "orangutan",
+    "oryx",
+    "otter",
+    "ox",
+    "panda",
+    "panther",
+    "parakeet",
+    "parrot",
+    "pig",
+    "platypus",
+    "polar bear",
+    "porcupine",
+    "porpoise",
+    "prairie dog",
+    "puma",
+    "rabbit",
+    "raccoon",
+    "ram",
+    "rat",
+    "reindeer",
+    "reptile",
+    "rhinoceros",
+    "salamander",
+    "seal",
+    "sheep",
+    "shrew",
+    "silver fox",
+    "skunk",
+    "sloth",
+    "snake",
+    "squirrel",
+    "tapir",
+    "tiger",
+    "toad",
+    "turtle",
+    "walrus",
+    "warthog",
+    "weasel",
+    "whale",
+    "wildcat",
+    "wolf",
+    "wolverine",
+    "wombat",
+    "woodchuck",
+    "yak",
+    "zebra",
+  ];
+
+  // The current animal name the user is trying to guess
+  let currentAnimal = ``;
+  let currentAnswer = ``;
+
+  let animalLetters = [];
+
+  p.setup = function () {
+    let canvas3 = p.createCanvas(563, 400);
+    canvas3.parent(`type-of-clue4`);
+
+    // Is annyang available?
+    if (annyang) {
+      // Create the guessing command
+      let commands = {
+        "*animal": p.guessAnimal,
+        // Next: nextQuestion,
+      };
+      // Setup annyang and start
+      annyang.addCommands(commands);
+      annyang.start();
+      annyang.debug();
+    }
+
+    currentAnswer = ``;
+    currentAnimal = p.random(animals);
+    while (currentAnimal.length < 6) {
+      currentAnimal = p.random(animals);
+    }
+    console.log(currentAnimal);
+
+    for (let i = 0; i < currentAnimal.length; i++) {
+      let letter = currentAnimal[i];
+      let myLetter = p.createLetter(letter);
+      animalLetters.push(myLetter);
+    }
   };
-  sketch.draw = function () {};
+
+  p.createLetter = function (letter) {
+    let theLetter = {
+      x: p.random(10, p.width - 10),
+      y: p.random(10, p.height - 10),
+      size: 30,
+      letter: letter,
+    };
+    return theLetter;
+  };
+
+  p.draw = function () {
+    if (state[3] === `game`) {
+      p.game();
+    } else if (state[3] === `found`) {
+      p.background(0, 0, 0);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textSize(30);
+      p.fill(255);
+      p.text(`${cipherClues[3]}`, p.width / 2, p.height / 2);
+      console.log(`${cipherClues[3]}`);
+      p.noLoop();
+    }
+  };
+
+  p.game = function () {
+    p.background(255, 204, 204);
+
+    for (let i = 0; i < animalLetters.length; i++) {
+      let theLetter = animalLetters[i];
+
+      p.push();
+      p.fill(0);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textSize(theLetter.size);
+      p.text(theLetter.letter, theLetter.x, theLetter.y);
+      p.pop();
+    }
+
+    if (currentAnswer === currentAnimal) {
+      p.push();
+      p.fill(0);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textSize(30);
+      p.text(currentAnswer, p.width / 2, p.height / 2);
+      p.pop();
+    } else {
+      p.push();
+      p.fill(255, 0, 0);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textSize(30);
+      p.text(currentAnswer, p.width / 2, p.height / 2);
+      p.pop();
+    }
+
+    if (currentAnswer === currentAnimal) {
+      state[3] = `found`;
+    }
+  };
+
+  p.guessAnimal = function (animal) {
+    currentAnswer = animal.toLowerCase();
+  };
 };
 new p5(s4);
 
@@ -603,11 +839,13 @@ function submitAnswer() {
   if (userAnswer === chosenWord) {
     // alert with the answer (for now to test)
     alert(userAnswer);
+    $(`#user-answer`).val(``);
   }
   // if the answer is wrong
   else {
     // alert with "Wrong!" (for now)
     alert(`Wrong!`);
+    $(`#user-answer`).val(``);
   }
 }
 
@@ -867,7 +1105,7 @@ function openCloseDialog(button, dialogBox) {
 /*******************************
  *******************************/
 
-function randomArrayPos(array) {
-  let i = Math.floor(Math.random(array.length));
-  return array[i];
-}
+// function randomArrayPos(array) {
+//   let i = Math.floor(Math.random(array.length));
+//   return array[i];
+// }
