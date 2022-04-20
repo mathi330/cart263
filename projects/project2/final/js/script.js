@@ -321,6 +321,7 @@ with the name and confidence value.
   p.running = function () {
     // Display the webcam
     p.image(video, 0, 0, p.width, p.height);
+    p.background(255, 100);
 
     // Check if there currently predictions to display
     if (predictions) {
@@ -335,6 +336,26 @@ with the name and confidence value.
           state[1] = `found`;
         }
       }
+
+      p.push();
+      p.textSize(18);
+      p.textStyle(p.BOLD);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.text(
+        `  I have no voice and yet I speak to you,
+  I tell of all things in the world that people do.
+  I have leaves, but I am not a tree,
+  I have pages, but I am not a bride or royalty.
+  I have a spine and hinges, but I am not a man or a door,
+  I have told you all, I cannot tell you more.
+
+  What am I?`,
+        p.width / 2,
+        p.height / 2
+      );
+
+      // riddle from: https://www.riddlesandanswers.com/v/233435/i-have-no-voice-and-yet-i-speak-to-you-i-tell-of-all-things-in-the-world-that-people-do-i-have-l/
+      p.pop();
     }
   };
 
@@ -741,13 +762,141 @@ let s4 = function (p) {
 };
 new p5(s4);
 
-let s5 = function (sketch) {
-  sketch.setup = function () {
-    let canvas5 = sketch.createCanvas(363, 300);
-    canvas5.parent(`type-of-clue5`);
-    sketch.background(255, 0, 255);
+let s5 = function (p) {
+  let numWinks = 120;
+  let emojis = [];
+  let wink = undefined;
+  let kiss = undefined;
+  let emojiToFind = undefined;
+
+  let user = {
+    size: 20,
+    x: undefined,
+    y: undefined,
+    color: {
+      r: 255,
+      g: 0,
+      b: 255,
+      a: 200,
+    },
+    vx: 0,
+    vy: 0,
+    ax: 0,
+    ay: 0,
+    maxSpeed: 3,
+    acceleration: 0.1,
   };
-  sketch.draw = function () {};
+
+  p.preload = function () {
+    wink = p.loadImage(`assets/images/wink.png`);
+    kiss = p.loadImage(`assets/images/kiss-emoji.png`);
+  };
+
+  p.setup = function () {
+    let canvas1 = p.createCanvas(563, 400);
+    canvas1.parent(`type-of-clue5`);
+
+    // p.imageMode(p.CENTER);
+
+    user.x = p.random(0 + user.size / 2, p.width - user.size / 2);
+    user.y = p.random(0 + user.size / 2, p.height - user.size / 2);
+
+    for (let i = 0; i < numWinks; i++) {
+      let emoji = p.createEmoji(wink);
+      // emoji.vx = p.random(-emoji.maxSpeed, emoji.maxSpeed);
+      // emoji.vy = p.random(-emoji.maxSpeed, emoji.maxSpeed);
+      emojis.push(emoji);
+    }
+
+    emojiToFind = p.createEmoji(kiss);
+  };
+
+  p.createEmoji = function (myEmoji) {
+    let mySize = 30;
+    let xPos = p.random(0 + mySize, p.width - mySize);
+    let yPos = p.random(0 + mySize, p.height - mySize);
+    let d = p.dist(user.x, user.y, xPos, yPos);
+    while (d < user.size / 2) {
+      xPos = p.random(0 + mySize, p.width - mySize);
+      yPos = p.random(0 + mySize, p.height - mySize);
+    }
+    let emoji = {
+      x: xPos,
+      y: yPos,
+      size: mySize,
+      img: myEmoji,
+    };
+    return emoji;
+  };
+
+  p.draw = function () {
+    if (state[4] === `game`) {
+      p.game();
+    } else if (state[4] === `found`) {
+      p.background(0, 0, 0);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textSize(30);
+      p.fill(255);
+      p.text(`${cipherClues[4]}`, p.width / 2, p.height / 2);
+      console.log(`${cipherClues[4]}`);
+      p.noLoop();
+    }
+  };
+
+  p.game = function () {
+    p.background(0, 0, 0);
+    for (let i = 0; i < emojis.length; i++) {
+      let emoji = emojis[i];
+      p.push();
+      p.fill(255);
+      // p.ellipse(emoji.x, emoji.y, emoji.size, emoji.size);
+      p.image(wink, emoji.x, emoji.y, emoji.size, emoji.size);
+      p.pop();
+    }
+
+    p.push();
+    p.fill(255);
+    // p.ellipse(emoji.x, emoji.y, emoji.size, emoji.size);
+    p.image(
+      kiss,
+      emojiToFind.x,
+      emojiToFind.y,
+      emojiToFind.size,
+      emojiToFind.size
+    );
+    p.pop();
+
+    p.push();
+    if (p.mouseX > user.x) {
+      user.ax = user.acceleration;
+    } else if (p.mouseX < user.x) {
+      user.ax = -user.acceleration;
+    }
+    if (p.mouseY > user.y) {
+      user.ay = user.acceleration;
+    } else if (p.mouseY < user.y) {
+      user.ay = -user.acceleration;
+    }
+
+    user.vx += user.ax;
+    user.vx = p.constrain(user.vx, -user.maxSpeed, user.maxSpeed);
+
+    user.vy += user.ay;
+    user.vy = p.constrain(user.vy, -user.maxSpeed, user.maxSpeed);
+
+    user.x += user.vx;
+    user.y += user.vy;
+
+    p.fill(user.color.r, user.color.g, user.color.b, user.color.a);
+    p.noStroke();
+    p.ellipse(user.x, user.y, user.size);
+    p.pop();
+
+    let d = p.dist(user.x, user.y, emojiToFind.x, emojiToFind.y);
+    if (d < user.size / 2) {
+      state[4] = `found`;
+    }
+  };
 };
 new p5(s5);
 
