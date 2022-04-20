@@ -190,9 +190,17 @@ let s1 = function (sketch) {
       let flower = flowers[i];
       let d = sketch.dist(flower.x, flower.y, sketch.mouseX, sketch.mouseY);
 
-      if (d < flower.petalSize + flower.petalSize / 2) {
+      if (
+        d < flower.petalSize + flower.petalSize / 2 &&
+        sketch.mouseX >= 0 &&
+        sketch.mouseX <= sketch.width &&
+        sketch.mouseY >= 0 &&
+        sketch.mouseY <= sketch.height
+      ) {
         flower.x = sketch.mouseX;
         flower.y = sketch.mouseY;
+        sketch.constrain(flowers[i].x, 0, sketch.width);
+        sketch.constrain(flowers[i].y, 0, sketch.height);
       }
     }
   };
@@ -214,23 +222,254 @@ let s1 = function (sketch) {
 };
 new p5(s1);
 
-let s2 = function (sketch) {
-  sketch.setup = function () {
-    let canvas2 = sketch.createCanvas(363, 300);
-    canvas2.parent(`type-of-clue2`);
-    sketch.background(0, 255, 0);
-  };
-  sketch.draw = function () {};
-};
-new p5(s2);
+// let s2 = function (p) {
+//   // Current state of program
+//   let clueState = `loading`; // loading, running
+//   // User's webcam
+//   let video;
+//   // The name of our model
+//   let modelName = `CocoSsd`;
+//   // ObjectDetector object (using the name of the model for clarify)
+//   let cocossd;
+//   // The current set of predictions made by CocoSsd once it's running
+//   let predictions = [];
+//
+//   /**
+// Starts the webcam and the ObjectDetector
+// */
+//   p.setup = function () {
+//     let canvas2 = p.createCanvas(640, 480);
+//     canvas2.parent(`type-of-clue2`);
+//
+//     // Start webcam and hide the resulting HTML element
+//     video = p.createCapture(p.VIDEO);
+//     video.hide();
+//
+//     // Start the CocoSsd model and when it's ready start detection
+//     // and switch to the running state
+//     cocossd = ml5.objectDetector("cocossd", {}, function () {
+//       // Ask CocoSsd to start detecting objects, calls gotResults
+//       // if it finds something
+//       cocossd.detect(video, p.gotResults);
+//       // Switch to the running state
+//       clueState = `running`;
+//     });
+//   };
+//
+//   /**
+// Called when CocoSsd has detected at least one object in the video feed
+// */
+//   p.gotResults = function (err, results) {
+//     // If there's an error, report it
+//     if (err) {
+//       console.error(err);
+//     }
+//     // Otherwise, save the results into our predictions array
+//     else {
+//       predictions = results;
+//     }
+//     // Ask CocoSsd to detect objects again so it's continuous
+//     cocossd.detect(video, p.gotResults);
+//   };
+//
+//   /**
+// Handles the two states of the program: loading, running
+// */
+//   p.draw = function () {
+//     if (clueState === `loading`) {
+//       p.loading();
+//     } else if (clueState === `running`) {
+//       p.running();
+//     }
+//   };
+//
+//   /**
+// Displays a simple loading screen with the loading model's name
+// */
+//   p.loading = function () {
+//     p.background(255);
+//
+//     p.push();
+//     p.textSize(32);
+//     p.textStyle(BOLD);
+//     p.textAlign(CENTER, CENTER);
+//     p.text(`Loading...`, p.width / 2, p.height / 2);
+//     p.pop();
+//   };
+//
+//   /**
+// Displays the webcam.
+// If there are currently objects detected it outlines them and labels them
+// with the name and confidence value.
+// */
+//   p.running = function () {
+//     // Display the webcam
+//     p.image(video, 0, 0, p.width, p.height);
+//
+//     // Check if there currently predictions to display
+//     if (predictions) {
+//       // If so run through the array of predictions
+//       for (let i = 0; i < predictions.length; i++) {
+//         // Get the object predicted
+//         let object = predictions[i];
+//         // Highlight it on the canvas
+//         p.highlightObject(object);
+//       }
+//     }
+//   };
+//
+//   /**
+// Provided with a detected object it draws a box around it and includes its
+// label and confidence value
+// */
+//   p.highlightObject = function (object) {
+//     // Display a box around it
+//     p.push();
+//     p.noFill();
+//     p.stroke(255, 255, 0);
+//     p.rect(object.x, object.y, object.width, object.height);
+//     p.pop();
+//     // Display the label and confidence in the center of the box
+//     p.push();
+//     p.textSize(18);
+//     p.fill(255, 255, 0);
+//     p.textAlign(CENTER, CENTER);
+//     p.text(
+//       `${object.label}, ${object.confidence.toFixed(2)}`,
+//       object.x + object.width / 2,
+//       object.y + object.height / 2
+//     );
+//     p.pop();
+//   };
+// };
+// new p5(s2);
 
 let s3 = function (sketch) {
-  sketch.setup = function () {
-    let canvas3 = sketch.createCanvas(363, 300);
-    canvas3.parent(`type-of-clue3`);
-    sketch.background(0, 0, 255);
+  let numfoods = 15;
+  let foods = [];
+
+  let user = {
+    size: 30,
+    x: undefined,
+    y: undefined,
+    color: {
+      r: 255,
+      g: 255,
+      b: 0,
+    },
+    speed: 5,
   };
-  sketch.draw = function () {};
+
+  sketch.setup = function () {
+    let canvas3 = sketch.createCanvas(563, 400);
+    canvas3.parent(`type-of-clue3`);
+
+    user.x = sketch.width / 2;
+    user.y = sketch.height / 2;
+
+    for (let i = 0; i < numfoods; i++) {
+      let food = sketch.createfood();
+      food.vx = sketch.random(-food.maxSpeed, food.maxSpeed);
+      food.vy = sketch.random(-food.maxSpeed, food.maxSpeed);
+      foods.push(food);
+    }
+  };
+
+  sketch.createfood = function () {
+    let foodSize = 10;
+    let xPos = sketch.random(0 + foodSize, sketch.width - foodSize);
+    let yPos = sketch.random(0 + foodSize, sketch.height - foodSize);
+    let d = sketch.dist(user.x, user.y, xPos, yPos);
+    while (d < user.size) {
+      xPos = sketch.random(0 + foodSize, sketch.width - foodSize);
+      yPos = sketch.random(0 + foodSize, sketch.height - foodSize);
+    }
+    let food = {
+      x: xPos,
+      y: yPos,
+      size: foodSize,
+      color: {
+        r: 255,
+        g: 0,
+        b: 0,
+      },
+      maxSpeed: 2,
+      vx: 0,
+      vy: 0,
+    };
+    return food;
+  };
+
+  sketch.draw = function () {
+    if (state[2] === `game`) {
+      sketch.game();
+    } else if (state[2] === `found`) {
+      sketch.background(0, 0, 0);
+      sketch.textAlign(sketch.CENTER, sketch.CENTER);
+      sketch.textSize(30);
+      sketch.fill(255);
+      sketch.text(`${cipherClues[2]}`, sketch.width / 2, sketch.height / 2);
+      console.log(`${cipherClues[2]}`);
+    }
+  };
+
+  sketch.game = function () {
+    sketch.background(255);
+
+    if (sketch.keyIsDown(sketch.RIGHT_ARROW)) {
+      user.x += user.speed;
+    } else if (sketch.keyIsDown(sketch.LEFT_ARROW)) {
+      user.x -= user.speed;
+    }
+    if (sketch.keyIsDown(sketch.UP_ARROW)) {
+      user.y -= user.speed;
+    } else if (sketch.keyIsDown(sketch.DOWN_ARROW)) {
+      user.y += user.speed;
+    }
+
+    let userX = sketch.constrain(user.x, 0, sketch.width);
+    let userY = sketch.constrain(user.y, 0, sketch.height);
+
+    sketch.fill(user.color.r, user.color.g, user.color.b);
+    sketch.noStroke();
+    sketch.ellipse(userX, userY, user.size);
+
+    for (let i = 0; i < foods.length; i++) {
+      let food = foods[i];
+
+      let r = sketch.random();
+      if (r < 0.06) {
+        food.vx = sketch.random(-food.maxSpeed, food.maxSpeed);
+        food.vy = sketch.random(-food.maxSpeed, food.maxSpeed);
+      }
+
+      food.x += food.vx;
+      food.y += food.vy;
+
+      if (food.x < 0 + food.size / 2 || food.x > sketch.width - food.size / 2) {
+        food.vx = -food.vx;
+      }
+      if (
+        food.y < 0 + food.size / 2 ||
+        food.y > sketch.height - food.size / 2
+      ) {
+        food.vy = -food.vy;
+      }
+
+      sketch.fill(food.color.r, food.color.g, food.color.b);
+      sketch.noStroke();
+      sketch.rect(food.x, food.y, food.size);
+
+      let d = sketch.dist(user.x, user.y, food.x, food.y);
+      if (d < user.size / 2) {
+        foods.splice(i, 1);
+      }
+    }
+
+    if (foods.length <= 0) {
+      state[2] = `found`;
+    }
+  };
 };
 new p5(s3);
 
@@ -263,26 +502,6 @@ let s6 = function (sketch) {
   sketch.draw = function () {};
 };
 new p5(s6);
-
-let s7 = function (sketch) {
-  sketch.setup = function () {
-    let canvas7 = sketch.createCanvas(363, 300);
-    canvas7.parent(`type-of-clue7`);
-    sketch.background(0, 0, 0);
-  };
-  sketch.draw = function () {};
-};
-new p5(s7);
-
-let s8 = function (sketch) {
-  sketch.setup = function () {
-    let canvas8 = sketch.createCanvas(363, 300);
-    canvas8.parent(`type-of-clue8`);
-    sketch.background(0, 0, 0);
-  };
-  sketch.draw = function () {};
-};
-new p5(s8);
 
 /*******************************
  *******************************/
