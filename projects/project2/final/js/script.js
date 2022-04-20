@@ -43,12 +43,12 @@ const loremIpsumText = [
 let jsonFile = undefined;
 let chosenWord = `a`;
 let minWordLength = 6; // the minimum length the chosen word should be
-let maxWordLength = 8;
+let maxWordLength = 6;
 
-let typesOfClues = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-// let reorganizedTypes = [];
+let typesOfClues = [0, 1, 2, 3, 4, 5];
 let cipherClues = [];
-// shuffleArray();
+
+let state = [`game`, `game`, `game`, `game`, `game`, `game`, `game`, `game`];
 
 // add a json file with words from which the mystery word will be taken
 $.getJSON(
@@ -62,6 +62,230 @@ $.getJSON(
 // make the 2 dialog box open and close when the designated button is clicked
 openCloseDialog(`#starting-button`, `#the-text`);
 openCloseDialog(`#starting-button`, `#clue-dialog`);
+
+/*******************************
+p5 canvas for the clues
+ *******************************/
+
+let s1 = function (sketch) {
+  let numFlowers = 7;
+  let flowers = [];
+
+  let homeBaseSize = 60;
+  let homeBaseX = undefined;
+  let homeBaseY = undefined;
+
+  sketch.setup = function () {
+    let canvas1 = sketch.createCanvas(563, 400);
+    canvas1.parent(`type-of-clue1`);
+
+    homeBaseX = sketch.random(
+      0 + homeBaseSize / 2,
+      sketch.width - homeBaseSize / 2
+    );
+    homeBaseY = sketch.random(
+      0 + homeBaseSize / 2,
+      sketch.height - homeBaseSize / 2
+    );
+
+    for (let i = 0; i < numFlowers; i++) {
+      let flower = sketch.createFlower();
+      flowers.push(flower);
+    }
+  };
+
+  sketch.createFlower = function () {
+    let size = sketch.random(10, 25);
+    let xPos = sketch.random(0 + size, sketch.width - size);
+    let yPos = sketch.random(0 + size, sketch.height - size);
+    let d = sketch.dist(homeBaseX, homeBaseY, xPos, yPos);
+    while (d < homeBaseSize) {
+      xPos = sketch.random(0, sketch.width);
+      yPos = sketch.random(0, sketch.height);
+    }
+    let flower = {
+      x: xPos,
+      y: yPos,
+      petalSize: size,
+      numPetal: 8,
+      color: {
+        r: sketch.random(100, 255),
+        g: sketch.random(0, 100),
+        b: sketch.random(100, 255),
+      },
+    };
+    return flower;
+  };
+
+  sketch.displayFlower = function (flower) {
+    sketch.push();
+    sketch.noFill();
+    sketch.stroke(flower.color.r, flower.color.g, flower.color.b);
+
+    sketch.ellipse(
+      flower.x - (flower.petalSize / 4) * 3,
+      flower.y,
+      flower.petalSize
+    );
+    sketch.ellipse(
+      flower.x - flower.petalSize / 2,
+      flower.y - flower.petalSize / 2,
+      flower.petalSize
+    );
+    sketch.ellipse(
+      flower.x,
+      flower.y - (flower.petalSize / 4) * 3,
+      flower.petalSize
+    );
+    sketch.ellipse(
+      flower.x + flower.petalSize / 2,
+      flower.y - flower.petalSize / 2,
+      flower.petalSize
+    );
+    sketch.ellipse(
+      flower.x + (flower.petalSize / 4) * 3,
+      flower.y,
+      flower.petalSize
+    );
+    sketch.ellipse(
+      flower.x + flower.petalSize / 2,
+      flower.y + flower.petalSize / 2,
+      flower.petalSize
+    );
+    sketch.ellipse(
+      flower.x,
+      flower.y + (flower.petalSize / 4) * 3,
+      flower.petalSize
+    );
+    sketch.ellipse(
+      flower.x - flower.petalSize / 2,
+      flower.y + flower.petalSize / 2,
+      flower.petalSize
+    );
+    sketch.pop();
+  };
+
+  sketch.draw = function () {
+    if (state[0] === `game`) {
+      sketch.background(0, 0, 0);
+      sketch.noFill();
+      sketch.stroke(255, 255, 153);
+      sketch.ellipse(homeBaseX, homeBaseY, homeBaseSize);
+
+      for (let i = 0; i < flowers.length; i++) {
+        sketch.displayFlower(flowers[i]);
+      }
+    } else if (state[0] === `found`) {
+      sketch.background(0, 0, 0);
+      sketch.textAlign(sketch.CENTER, sketch.CENTER);
+      sketch.textSize(30);
+      sketch.fill(255);
+      sketch.text(`${cipherClues[0]}`, sketch.width / 2, sketch.height / 2);
+      console.log(`${cipherClues[0]}`);
+    }
+  };
+
+  sketch.mouseDragged = function () {
+    for (let i = 0; i < flowers.length; i++) {
+      let flower = flowers[i];
+      let d = sketch.dist(flower.x, flower.y, sketch.mouseX, sketch.mouseY);
+
+      if (d < flower.petalSize + flower.petalSize / 2) {
+        flower.x = sketch.mouseX;
+        flower.y = sketch.mouseY;
+      }
+    }
+  };
+
+  sketch.mouseReleased = function () {
+    for (let i = 0; i < flowers.length; i++) {
+      let flower = flowers[i];
+      let d = sketch.dist(flower.x, flower.y, homeBaseX, homeBaseY);
+
+      if (d < homeBaseSize / 2 && i !== 0) {
+        flowers.splice(i, 1);
+      }
+      if (d < homeBaseSize / 2 && i === 0) {
+        state[0] = `found`;
+        sketch.noLoop();
+      }
+    }
+  };
+};
+new p5(s1);
+
+let s2 = function (sketch) {
+  sketch.setup = function () {
+    let canvas2 = sketch.createCanvas(363, 300);
+    canvas2.parent(`type-of-clue2`);
+    sketch.background(0, 255, 0);
+  };
+  sketch.draw = function () {};
+};
+new p5(s2);
+
+let s3 = function (sketch) {
+  sketch.setup = function () {
+    let canvas3 = sketch.createCanvas(363, 300);
+    canvas3.parent(`type-of-clue3`);
+    sketch.background(0, 0, 255);
+  };
+  sketch.draw = function () {};
+};
+new p5(s3);
+
+let s4 = function (sketch) {
+  sketch.setup = function () {
+    let canvas4 = sketch.createCanvas(363, 300);
+    canvas4.parent(`type-of-clue4`);
+    sketch.background(255, 255, 0);
+  };
+  sketch.draw = function () {};
+};
+new p5(s4);
+
+let s5 = function (sketch) {
+  sketch.setup = function () {
+    let canvas5 = sketch.createCanvas(363, 300);
+    canvas5.parent(`type-of-clue5`);
+    sketch.background(255, 0, 255);
+  };
+  sketch.draw = function () {};
+};
+new p5(s5);
+
+let s6 = function (sketch) {
+  sketch.setup = function () {
+    let canvas6 = sketch.createCanvas(363, 300);
+    canvas6.parent(`type-of-clue6`);
+    sketch.background(0, 255, 255);
+  };
+  sketch.draw = function () {};
+};
+new p5(s6);
+
+let s7 = function (sketch) {
+  sketch.setup = function () {
+    let canvas7 = sketch.createCanvas(363, 300);
+    canvas7.parent(`type-of-clue7`);
+    sketch.background(0, 0, 0);
+  };
+  sketch.draw = function () {};
+};
+new p5(s7);
+
+let s8 = function (sketch) {
+  sketch.setup = function () {
+    let canvas8 = sketch.createCanvas(363, 300);
+    canvas8.parent(`type-of-clue8`);
+    sketch.background(0, 0, 0);
+  };
+  sketch.draw = function () {};
+};
+new p5(s8);
+
+/*******************************
+ *******************************/
 
 /*******************************
 
@@ -227,6 +451,13 @@ function processResult(data) {
   addLoremIpsum(listOfSelectedPos);
 
   createClues();
+
+  // for (let i = 0; i < chosenWord.length; i++) {
+  //   if (state[i] === `found`) {
+  //     $(`#button-clue${i + 1}`).text(`${cipherClues[i]}`);
+  //     console.log(`HELLOOOOOO!O!O!OO!`);
+  //   }
+  // }
 }
 
 /*
@@ -241,10 +472,12 @@ function createClues() {
     let $buttonForClue = $(`<button></button>`);
     let $newClue = $(`<div></div>`);
 
-    $buttonForClue.text(`?? ??`); // text in button
+    $buttonForClue.text(`Letter ${i + 1}`); // text in button
     $buttonForClue.addClass(`button-for-clues`);
+    $buttonForClue.attr("id", `button-clue${i + 1}`);
     $newClue.addClass(`character-clue-dialogs`);
     $newClue.attr("id", `type-of-clue${i + 1}`);
+    $newClue.attr("title", `Clue ${i + 1}`);
 
     allCluesButtons.push($buttonForClue);
     allClues.push($newClue);
@@ -258,7 +491,7 @@ function createClues() {
 
     $clueDialog = $(this)
       .next("div.character-clue-dialogs")
-      .dialog({ autoOpen: false, height: 400, width: 400 });
+      .dialog({ autoOpen: false, height: 500, width: 600 });
     openCloseDialog(this, $clueDialog);
   });
 
@@ -268,82 +501,9 @@ function createClues() {
 }
 
 /*******************************
-p5 canvas for the clues
- *******************************/
 
-let s1 = function (sketch) {
-  sketch.setup = function () {
-    let canvas1 = sketch.createCanvas(363, 300);
-    canvas1.parent(`type-of-clue1`);
-    sketch.background(255, 0, 0);
-  };
 
-  sketch.draw = function () {};
-};
-new p5(s1);
-
-let s2 = function (sketch) {
-  sketch.setup = function () {
-    let canvas2 = sketch.createCanvas(363, 300);
-    canvas2.parent(`type-of-clue2`);
-    sketch.background(0, 255, 0);
-  };
-  sketch.draw = function () {};
-};
-new p5(s2);
-
-let s3 = function (sketch) {
-  sketch.setup = function () {
-    let canvas3 = sketch.createCanvas(363, 300);
-    canvas3.parent(`type-of-clue3`);
-    sketch.background(0, 0, 255);
-  };
-  sketch.draw = function () {};
-};
-new p5(s3);
-
-let s4 = function (sketch) {
-  sketch.setup = function () {
-    let canvas4 = sketch.createCanvas(363, 300);
-    canvas4.parent(`type-of-clue4`);
-    sketch.background(255, 255, 0);
-  };
-  sketch.draw = function () {};
-};
-new p5(s4);
-
-let s5 = function (sketch) {
-  sketch.setup = function () {
-    let canvas5 = sketch.createCanvas(363, 300);
-    canvas5.parent(`type-of-clue5`);
-    sketch.background(255, 0, 255);
-  };
-  sketch.draw = function () {};
-};
-new p5(s5);
-
-let s6 = function (sketch) {
-  sketch.setup = function () {
-    let canvas6 = sketch.createCanvas(363, 300);
-    canvas6.parent(`type-of-clue6`);
-    sketch.background(0, 255, 255);
-  };
-  sketch.draw = function () {};
-};
-new p5(s6);
-
-let s7 = function (sketch) {
-  sketch.setup = function () {
-    let canvas7 = sketch.createCanvas(363, 300);
-    canvas7.parent(`type-of-clue7`);
-    sketch.background(0, 0, 0);
-  };
-  sketch.draw = function () {};
-};
-new p5(s7);
-
-/*******************************
- *******************************/
+*******************************/
 
 /**
 findCharacterPos(char)
