@@ -384,7 +384,6 @@ label and confidence value
     p.pop();
   };
 };
-
 new p5(s2);
 
 let s3 = function (sketch) {
@@ -667,8 +666,8 @@ let s4 = function (p) {
   let animalLetters = [];
 
   p.setup = function () {
-    let canvas3 = p.createCanvas(563, 400);
-    canvas3.parent(`type-of-clue4`);
+    let canvas4 = p.createCanvas(563, 400);
+    canvas4.parent(`type-of-clue4`);
 
     // Is annyang available?
     if (annyang) {
@@ -793,8 +792,8 @@ let s5 = function (p) {
   };
 
   p.setup = function () {
-    let canvas1 = p.createCanvas(563, 400);
-    canvas1.parent(`type-of-clue5`);
+    let canvas5 = p.createCanvas(563, 400);
+    canvas5.parent(`type-of-clue5`);
 
     // p.imageMode(p.CENTER);
 
