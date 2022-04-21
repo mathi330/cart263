@@ -899,13 +899,119 @@ let s5 = function (p) {
 };
 new p5(s5);
 
-let s6 = function (sketch) {
-  sketch.setup = function () {
-    let canvas6 = sketch.createCanvas(363, 300);
-    canvas6.parent(`type-of-clue6`);
-    sketch.background(0, 255, 255);
+let s6 = function (p) {
+  let user = {
+    x: undefined,
+    y: undefined,
+    size: 10,
+    color: {
+      r: 255,
+      g: 0,
+      b: 255,
+    },
   };
-  sketch.draw = function () {};
+
+  let numColumns = 6;
+  let numRows = 4;
+  let squares = [];
+
+  let canvasWidth = 600;
+  let canvasHeight = 400;
+
+  let squareSize = canvasWidth / numColumns;
+  let myColor = p.color(230, 255, 230);
+  let chooseColor = [0, myColor];
+
+  let blackSquares = [];
+
+  p.setup = function () {
+    let canvas6 = p.createCanvas(canvasWidth, canvasHeight);
+    canvas6.parent(`type-of-clue6`);
+
+    p.noCursor();
+
+    for (let i = 0; i < numColumns; i++) {
+      for (let j = 0; j < numRows; j++) {
+        let x = i * squareSize;
+        let y = j * squareSize;
+        let square = p.createSquare(x, y);
+        squares.push(square);
+        if (square.color === chooseColor[0]) {
+          blackSquares.push(square);
+        }
+      }
+    }
+  };
+
+  p.createSquare = function (xPos, yPos) {
+    let square = {
+      x: xPos,
+      y: yPos,
+      width: squareSize,
+      height: squareSize,
+      color: p.random(chooseColor),
+    };
+    return square;
+  };
+
+  p.draw = function () {
+    user.x = p.mouseX;
+    user.y = p.mouseY;
+    if (state[5] === `game`) {
+      p.game();
+    } else if (state[5] === `found`) {
+      p.background(0, 0, 0);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textSize(30);
+      p.fill(255);
+      p.text(`${cipherClues[5]}`, p.width / 2, p.height / 2);
+      console.log(`${cipherClues[5]}`);
+    }
+    p.noStroke();
+    p.fill(user.color.r, user.color.g, user.color.b);
+    p.ellipse(p.mouseX, p.mouseY, user.size);
+  };
+
+  p.game = function () {
+    p.background(230);
+
+    for (let i = 0; i < squares.length; i++) {
+      let square = squares[i];
+      p.noStroke();
+      p.fill(square.color);
+      p.rect(square.x, square.y, square.width, square.height);
+    }
+
+    for (let i = 0; i < squares.length; i++) {}
+    if (blackSquares.length === squares.length || blackSquares.length < 1) {
+      state[5] = `found`;
+    }
+  };
+
+  p.mousePressed = function () {
+    for (let i = 0; i < squares.length; i++) {
+      let square = squares[i];
+      if (
+        user.x + user.size / 2 > square.x &&
+        user.x - user.size / 2 < square.x + square.width &&
+        user.y + user.size / 2 > square.y &&
+        user.y - user.size / 2 < square.y + square.height &&
+        square.color === chooseColor[0]
+      ) {
+        square.color = chooseColor[1];
+        blackSquares.splice(0, 1);
+      } else if (
+        user.x + user.size / 2 > square.x &&
+        user.x - user.size / 2 < square.x + square.width &&
+        user.y + user.size / 2 > square.y &&
+        user.y - user.size / 2 < square.y + square.height &&
+        square.color === chooseColor[1]
+      ) {
+        square.color = chooseColor[0];
+        blackSquares.push(square);
+      }
+    }
+  };
 };
 new p5(s6);
 
