@@ -76,7 +76,7 @@ let s1 = function (sketch) {
   let homeBaseY = undefined;
 
   sketch.setup = function () {
-    let canvas1 = sketch.createCanvas(563, 400);
+    let canvas1 = sketch.createCanvas(600, 400);
     canvas1.parent(`type-of-clue1`);
 
     homeBaseX = sketch.random(
@@ -241,7 +241,7 @@ let s2 = function (p) {
 Starts the webcam and the ObjectDetector
 */
   p.setup = function () {
-    let canvas2 = p.createCanvas(563, 400);
+    let canvas2 = p.createCanvas(600, 400);
     canvas2.parent(`type-of-clue2`);
 
     if (state[1] === `game`) {
@@ -403,7 +403,7 @@ let s3 = function (sketch) {
   };
 
   sketch.setup = function () {
-    let canvas3 = sketch.createCanvas(563, 400);
+    let canvas3 = sketch.createCanvas(600, 400);
     canvas3.parent(`type-of-clue3`);
 
     user.x = sketch.width / 2;
@@ -666,7 +666,7 @@ let s4 = function (p) {
   let animalLetters = [];
 
   p.setup = function () {
-    let canvas4 = p.createCanvas(563, 400);
+    let canvas4 = p.createCanvas(600, 400);
     canvas4.parent(`type-of-clue4`);
 
     // Is annyang available?
@@ -792,7 +792,7 @@ let s5 = function (p) {
   };
 
   p.setup = function () {
-    let canvas5 = p.createCanvas(563, 400);
+    let canvas5 = p.createCanvas(600, 400);
     canvas5.parent(`type-of-clue5`);
 
     // p.imageMode(p.CENTER);
@@ -1029,9 +1029,10 @@ $(function () {
   $("#clue-dialog").dialog({
     autoOpen: false,
     height: `auto`,
-    width: 300,
-    // position: [
-    //   Math.random() * $(window).width(),
+    width: 200,
+
+    // [
+    // Math.random() * $(window).width()
     //   Math.random() * $(window).height(),
     // ],
   });
@@ -1113,15 +1114,19 @@ function submitAnswer() {
   let userAnswer = $(`#user-answer`).val();
   // if the answer is correct
   if (userAnswer === chosenWord) {
-    // alert with the answer (for now to test)
-    alert(userAnswer);
     $(`#user-answer`).val(``);
+    $(`#user-answer`).css({
+      color: `#000000`,
+      "border-color": `#000000`,
+    });
   }
   // if the answer is wrong
   else {
-    // alert with "Wrong!" (for now)
-    alert(`Wrong!`);
-    $(`#user-answer`).val(``);
+    $(`#user-answer`).val(`Wrong! Try again!`);
+    $(`#user-answer`).css({
+      color: `#ff0000`,
+      "border-color": `#ff0000`,
+    });
   }
 }
 
@@ -1224,21 +1229,8 @@ function createClues() {
 
     $clueDialog = $(this)
       .next("div.character-clue-dialogs")
-      .dialog({ autoOpen: false, height: 500, width: 600 });
+      .dialog({ autoOpen: false, height: 500, width: 637 });
     openCloseDialog(this, $clueDialog);
-    // if (
-    //   $($clueDialog) === $(`#button-clue2`) &&
-    //   textHidden &&
-    //   state[1] !== `found`
-    // ) {
-    //   state[1] = `wait`;
-    // } else if (
-    //   $($clueDialog) === $(`#button-clue2`) &&
-    //   textHidden === false &&
-    //   state[1] !== `found`
-    // ) {
-    //   state[1] = `game`;
-    // }
   });
 
   $(`#clues-dialog`).append(allCluesButtons);
@@ -1381,6 +1373,13 @@ function openCloseDialog(button, dialogBox) {
     // if the dialog box is closed
     if (textHidden) {
       $(dialogBox).dialog("open", "moveToTop"); // open it
+
+      $(dialogBox).dialog("widget").position({
+        my: "center",
+        at: "center",
+        of: window,
+        collision: "flip",
+      });
       textHidden = false;
     }
     // if the dialog box is open

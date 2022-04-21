@@ -1,3 +1,7 @@
+body {
+  background-color: #1e1e1e;
+}
+
 #lorem-ipsum {
   font-family: monospace;
   font-size: 1.2rem;
@@ -40,9 +44,6 @@ h2 {
   margin: 10%;
 }
 
-#clue-dialog {
-}
-
 #secret-code {
   position: absolute;
   top: 50%;
@@ -51,4 +52,23 @@ h2 {
   font-weight: bold;
   transform: translate(-50%, -50%);
   text-align: center;
+}
+
+#user-answer {
+  border-radius: 5px;
+}
+
+.button-for-clues {
+  margin: 3px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #e6e6e6;
+}
+
+button:hover {
+  background-color: #bfbfbf;
 }
