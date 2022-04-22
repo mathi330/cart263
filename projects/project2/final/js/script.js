@@ -45,9 +45,10 @@ let chosenWord = `a`;
 let minWordLength = 6; // the minimum length the chosen word should be
 let maxWordLength = 6;
 
-let typesOfClues = [0, 1, 2, 3, 4, 5];
+// the array containing the clues
 let cipherClues = [];
 
+// the state array that keeps track of all the games' states
 let state = [`game`, `game`, `game`, `game`, `game`, `game`];
 
 // add a json file with words from which the mystery word will be taken
@@ -64,44 +65,55 @@ openCloseDialog(`#starting-button`, `#the-text`);
 openCloseDialog(`#starting-button`, `#clue-dialog`);
 
 /*******************************
-p5 canvas for the clues
- *******************************/
+p5 sketches for the clues
 
-let s1 = function (sketch) {
+sketch where the user needs to drag and drop one of the flowers inside the home base
+ *******************************/
+let s1 = function (p) {
+  // total number of flowers
   let numFlowers = 7;
+  // array to store the flowers
   let flowers = [];
 
+  // the homebase in which the user needs to drag the flower
   let homeBaseSize = 60;
   let homeBaseX = undefined;
   let homeBaseY = undefined;
 
-  sketch.setup = function () {
-    let canvas1 = sketch.createCanvas(600, 400);
+  /*
+setup()
+create the canvas, set the homebase's coordinates, create the flowers
+*/
+  p.setup = function () {
+    let canvas1 = p.createCanvas(600, 400);
     canvas1.parent(`type-of-clue1`);
 
-    homeBaseX = sketch.random(
-      0 + homeBaseSize / 2,
-      sketch.width - homeBaseSize / 2
-    );
-    homeBaseY = sketch.random(
-      0 + homeBaseSize / 2,
-      sketch.height - homeBaseSize / 2
-    );
+    // homebase's x and y coordinates
+    homeBaseX = p.random(0 + homeBaseSize / 2, p.width - homeBaseSize / 2);
+    homeBaseY = p.random(0 + homeBaseSize / 2, p.height - homeBaseSize / 2);
 
+    // for loop to create all the flowers
     for (let i = 0; i < numFlowers; i++) {
-      let flower = sketch.createFlower();
-      flowers.push(flower);
+      let flower = p.createFlower(); // create a flower
+      flowers.push(flower); // store the flower at the end of the flowers array
     }
   };
 
-  sketch.createFlower = function () {
-    let size = sketch.random(10, 25);
-    let xPos = sketch.random(0 + size, sketch.width - size);
-    let yPos = sketch.random(0 + size, sketch.height - size);
-    let d = sketch.dist(homeBaseX, homeBaseY, xPos, yPos);
-    while (d < homeBaseSize) {
-      xPos = sketch.random(0, sketch.width);
-      yPos = sketch.random(0, sketch.height);
+  /*
+createFlower()
+create a flower's object
+*/
+  p.createFlower = function () {
+    let size = p.random(10, 25);
+    // choose random coordinates
+    let xPos = p.random(0 + size, p.width - size);
+    let yPos = p.random(0 + size, p.height - size);
+    // look at the distance between the homebase's center and the flower's center
+    let d = p.dist(homeBaseX, homeBaseY, xPos, yPos);
+    // if they are ovelapping, change the coordinates
+    while (d < homeBaseSize / 2 + size) {
+      xPos = p.random(0, p.width);
+      yPos = p.random(0, p.height);
     }
     let flower = {
       x: xPos,
@@ -109,113 +121,138 @@ let s1 = function (sketch) {
       petalSize: size,
       numPetal: 8,
       color: {
-        r: sketch.random(100, 255),
-        g: sketch.random(0, 100),
-        b: sketch.random(100, 255),
+        r: p.random(100, 255),
+        g: p.random(0, 100),
+        b: p.random(100, 255),
       },
     };
     return flower;
   };
 
-  sketch.displayFlower = function (flower) {
-    sketch.push();
-    sketch.noFill();
-    sketch.stroke(flower.color.r, flower.color.g, flower.color.b);
+  /*
+displayFlower()
+display the flower and its petals
+*/
+  p.displayFlower = function (flower) {
+    p.push();
+    p.noFill();
+    p.stroke(flower.color.r, flower.color.g, flower.color.b);
 
-    sketch.ellipse(
+    // all the petals
+    p.ellipse(
       flower.x - (flower.petalSize / 4) * 3,
       flower.y,
       flower.petalSize
     );
-    sketch.ellipse(
+    p.ellipse(
       flower.x - flower.petalSize / 2,
       flower.y - flower.petalSize / 2,
       flower.petalSize
     );
-    sketch.ellipse(
+    p.ellipse(
       flower.x,
       flower.y - (flower.petalSize / 4) * 3,
       flower.petalSize
     );
-    sketch.ellipse(
+    p.ellipse(
       flower.x + flower.petalSize / 2,
       flower.y - flower.petalSize / 2,
       flower.petalSize
     );
-    sketch.ellipse(
+    p.ellipse(
       flower.x + (flower.petalSize / 4) * 3,
       flower.y,
       flower.petalSize
     );
-    sketch.ellipse(
+    p.ellipse(
       flower.x + flower.petalSize / 2,
       flower.y + flower.petalSize / 2,
       flower.petalSize
     );
-    sketch.ellipse(
+    p.ellipse(
       flower.x,
       flower.y + (flower.petalSize / 4) * 3,
       flower.petalSize
     );
-    sketch.ellipse(
+    p.ellipse(
       flower.x - flower.petalSize / 2,
       flower.y + flower.petalSize / 2,
       flower.petalSize
     );
-    sketch.pop();
+    p.pop();
   };
 
-  sketch.draw = function () {
+  /*
+draw()
+chooses what to do depending on whether the game is finished or not
+*/
+  p.draw = function () {
+    p.background(0, 0, 0);
+    // if the state of this clue is `game`
     if (state[0] === `game`) {
-      sketch.background(0, 0, 0);
-      sketch.noFill();
-      sketch.stroke(255, 255, 153);
-      sketch.ellipse(homeBaseX, homeBaseY, homeBaseSize);
+      // display the homebase
+      p.noFill();
+      p.stroke(255, 255, 153);
+      p.ellipse(homeBaseX, homeBaseY, homeBaseSize);
 
+      // display the flowers
       for (let i = 0; i < flowers.length; i++) {
-        sketch.displayFlower(flowers[i]);
+        p.displayFlower(flowers[i]);
       }
-    } else if (state[0] === `found`) {
-      sketch.background(0, 0, 0);
-      sketch.textAlign(sketch.CENTER, sketch.CENTER);
-      sketch.textSize(30);
-      sketch.fill(255);
-      sketch.text(`${cipherClues[0]}`, sketch.width / 2, sketch.height / 2);
-      console.log(`${cipherClues[0]}`);
+    }
+    // if the game is finished
+    else if (state[0] === `found`) {
+      // display the clue in white, in the middle of the canvas
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textSize(30);
+      p.fill(255);
+      p.text(`${cipherClues[0]}`, p.width / 2, p.height / 2);
+      p.noLoop();
     }
   };
 
-  sketch.mouseDragged = function () {
+  /*
+mouseDragged()
+drags a flower
+*/
+  p.mouseDragged = function () {
+    // for each flower
     for (let i = 0; i < flowers.length; i++) {
       let flower = flowers[i];
-      let d = sketch.dist(flower.x, flower.y, sketch.mouseX, sketch.mouseY);
+      // measure the distance between the center of the flower and the mouse
+      let d = p.dist(flower.x, flower.y, p.mouseX, p.mouseY);
 
-      if (
-        d < flower.petalSize + flower.petalSize / 2 &&
-        sketch.mouseX >= 0 &&
-        sketch.mouseX <= sketch.width &&
-        sketch.mouseY >= 0 &&
-        sketch.mouseY <= sketch.height
-      ) {
-        flower.x = sketch.mouseX;
-        flower.y = sketch.mouseY;
-        sketch.constrain(flowers[i].x, 0, sketch.width);
-        sketch.constrain(flowers[i].y, 0, sketch.height);
+      // if the mouse is on the flower
+      if (d < flower.petalSize + flower.petalSize / 2) {
+        // change the flower to the mouse's coordinates
+        flower.x = p.mouseX;
+        flower.y = p.mouseY;
+        // keep the flower inside the canvas
+        flower.x = p.constrain(flower.x, 0, p.width);
+        flower.y = p.constrain(flower.y, 0, p.height);
       }
     }
   };
 
-  sketch.mouseReleased = function () {
+  /*
+mousePressed()
+when the mouse is released with flowers on top of the homebase, look at the distance between the flower and the homebase
+*/
+  p.mouseReleased = function () {
+    // for each flower
     for (let i = 0; i < flowers.length; i++) {
       let flower = flowers[i];
-      let d = sketch.dist(flower.x, flower.y, homeBaseX, homeBaseY);
+      // look at the distance between the homebase and the center of the flower
+      let d = p.dist(flower.x, flower.y, homeBaseX, homeBaseY);
 
+      // if the center of the flower is on the homebase and that flower is not the first of the flowers' array
       if (d < homeBaseSize / 2 && i !== 0) {
+        // remove that flower from the array
         flowers.splice(i, 1);
       }
+      // if the center of the flower is on the homebase and that flower is the first of the flowers' array
       if (d < homeBaseSize / 2 && i === 0) {
-        state[0] = `found`;
-        sketch.noLoop();
+        state[0] = `found`; // change the state to found
       }
     }
   };
@@ -224,6 +261,8 @@ new p5(s1);
 
 /*
 code taken from pippin's class on object detection with ml5.js
+the user needs to show the camera the object that from the riddle displayed on the canvas
+(the program uses ml5 object detection)
 */
 let s2 = function (p) {
   // Current state of program
@@ -237,8 +276,9 @@ let s2 = function (p) {
   // The current set of predictions made by CocoSsd once it's running
   let predictions = [];
 
-  /**
-Starts the webcam and the ObjectDetector
+  /*
+setup()
+create the canvas, start the webcam and ObjectDetector
 */
   p.setup = function () {
     let canvas2 = p.createCanvas(600, 400);
@@ -261,7 +301,8 @@ Starts the webcam and the ObjectDetector
     }
   };
 
-  /**
+  /*
+gotResults()
 Called when CocoSsd has detected at least one object in the video feed
 */
   p.gotResults = function (err, results) {
@@ -277,34 +318,44 @@ Called when CocoSsd has detected at least one object in the video feed
     cocossd.detect(video, p.gotResults);
   };
 
-  /**
-Handles the two states of the program: loading, running
+  /*
+draw()
+Handles the two states of the program: loading, running,
+and looks at the overall state (game and found), and decides what to do
 */
   p.draw = function () {
+    // if the state of this clue is `game`
     if (state[1] === `game`) {
+      // if the clue state is loading
       if (clueState === `loading`) {
-        p.loading();
-      } else if (clueState === `running`) {
-        p.running();
+        p.loading(); // execute the loading function
       }
-    } else if (state[1] === `found`) {
-      video.remove();
-      p.background(0, 0, 0);
+      // if the state is running
+      else if (clueState === `running`) {
+        p.running(); // execute the running function
+      }
+    }
+    // if the game is finished
+    else if (state[1] === `found`) {
+      video.remove(); // remove the videa
+      p.background(0, 0, 0); // set background to black
+      // display the clue in white, in the middle of the canvas
       p.textAlign(p.CENTER, p.CENTER);
       p.textSize(30);
       p.fill(255);
       p.text(`${cipherClues[1]}`, p.width / 2, p.height / 2);
-      console.log(`${cipherClues[1]}`);
       p.noLoop();
     }
   };
 
-  /**
+  /*
+loading()
 Displays a simple loading screen with the loading model's name
 */
   p.loading = function () {
-    p.background(255);
+    p.background(255); // black background
 
+    // display the text "Loading...", in white and centered
     p.push();
     p.textSize(32);
     p.textStyle(p.BOLD);
@@ -313,7 +364,8 @@ Displays a simple loading screen with the loading model's name
     p.pop();
   };
 
-  /**
+  /*
+running()
 Displays the webcam.
 If there are currently objects detected it outlines them and labels them
 with the name and confidence value.
@@ -321,7 +373,7 @@ with the name and confidence value.
   p.running = function () {
     // Display the webcam
     p.image(video, 0, 0, p.width, p.height);
-    p.background(255, 100);
+    p.background(255, 100); // whaite and slightly transparent background
 
     // Check if there currently predictions to display
     if (predictions) {
@@ -332,11 +384,13 @@ with the name and confidence value.
         // Highlight it on the canvas
         p.highlightObject(object);
 
+        // if the person shows a book
         if (object.label === `book`) {
-          state[1] = `found`;
+          state[1] = `found`; // change the overall state to found
         }
       }
 
+      // on top of the video feed, show this riddle, in black and centered
       p.push();
       p.textSize(18);
       p.textStyle(p.BOLD);
@@ -359,9 +413,9 @@ with the name and confidence value.
     }
   };
 
-  /**
-Provided with a detected object it draws a box around it and includes its
-label and confidence value
+  /*
+highlightObject()
+Provided with a detected object it draws a box around it and includes its label
 */
   p.highlightObject = function (object) {
     // Display a box around it
@@ -370,7 +424,7 @@ label and confidence value
     p.stroke(0, 255, 255);
     p.rect(object.x, object.y, object.width, object.height);
     p.pop();
-    // Display the label and confidence in the center of the box
+    // Display the label in the center of the box
     p.push();
     p.textSize(20);
     p.textStyle(p.BOLD);
@@ -386,10 +440,16 @@ label and confidence value
 };
 new p5(s2);
 
-let s3 = function (sketch) {
-  let numfoods = 15;
+/*
+a game where the user has to catch all the little red squares using there arrow keys
+*/
+let s3 = function (p) {
+  // the number of food to eat
+  let numFoods = 15;
+  // array to store the food
   let foods = [];
 
+  // the circle the user can control
   let user = {
     size: 30,
     x: undefined,
@@ -402,29 +462,44 @@ let s3 = function (sketch) {
     speed: 5,
   };
 
-  sketch.setup = function () {
-    let canvas3 = sketch.createCanvas(600, 400);
+  /*
+setup()
+create the canvas, the user's starting coordinates, the food
+*/
+  p.setup = function () {
+    let canvas3 = p.createCanvas(600, 400);
     canvas3.parent(`type-of-clue3`);
+    p.rectMode(p.CENTER);
 
-    user.x = sketch.width / 2;
-    user.y = sketch.height / 2;
+    // the user's starting coordinates
+    user.x = p.width / 2;
+    user.y = p.height / 2;
 
-    for (let i = 0; i < numfoods; i++) {
-      let food = sketch.createfood();
-      food.vx = sketch.random(-food.maxSpeed, food.maxSpeed);
-      food.vy = sketch.random(-food.maxSpeed, food.maxSpeed);
+    // create many pieces of food
+    for (let i = 0; i < numFoods; i++) {
+      let food = p.createFood(); // create a food particle
+      // set its velocity to a random number
+      food.vx = p.random(-food.maxSpeed, food.maxSpeed);
+      food.vy = p.random(-food.maxSpeed, food.maxSpeed);
+      // push the food into the foods' array
       foods.push(food);
     }
   };
 
-  sketch.createfood = function () {
-    let foodSize = 10;
-    let xPos = sketch.random(0 + 20, sketch.width - 20);
-    let yPos = sketch.random(0 + 20, sketch.height - 20);
-    let d = sketch.dist(user.x, user.y, xPos, yPos);
+  /*
+createFood()
+create the food object
+*/
+  p.createFood = function () {
+    let foodSize = 10; // size of a piece
+    // coordinates
+    let xPos = p.random(0 + foodSize * 2, p.width - foodSize * 2);
+    let yPos = p.random(0 + foodSize * 2, p.height - foodSize * 2);
+    // make sure the food doesn't appear on the user
+    let d = p.dist(user.x, user.y, xPos, yPos);
     while (d < user.size) {
-      xPos = sketch.random(0 + 20, sketch.width - 20);
-      yPos = sketch.random(0 + 20, sketch.height - 20);
+      xPos = p.random(0 + foodSize * 2, p.width - foodSize * 2);
+      yPos = p.random(0 + foodSize * 2, p.height - foodSize * 2);
     }
     let food = {
       x: xPos,
@@ -442,75 +517,102 @@ let s3 = function (sketch) {
     return food;
   };
 
-  sketch.draw = function () {
+  /*
+draw()
+chooses what to do depending on whether the game is finished or not
+*/
+  p.draw = function () {
+    // if the state of this clue is `game`
     if (state[2] === `game`) {
-      sketch.game();
-    } else if (state[2] === `found`) {
-      sketch.background(0, 0, 0);
-      sketch.textAlign(sketch.CENTER, sketch.CENTER);
-      sketch.textSize(30);
-      sketch.fill(255);
-      sketch.text(`${cipherClues[2]}`, sketch.width / 2, sketch.height / 2);
-      console.log(`${cipherClues[2]}`);
-      sketch.noLoop();
+      p.game(); // play the game function
+    }
+    // if the game is finished
+    else if (state[2] === `found`) {
+      p.background(0, 0, 0); // set background to black
+      // display the clue in white, in the middle of the canvas
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textSize(30);
+      p.fill(255);
+      p.text(`${cipherClues[2]}`, p.width / 2, p.height / 2);
+      p.noLoop();
     }
   };
 
-  sketch.game = function () {
-    sketch.background(243, 230, 255);
+  /*
+game()
+display the food, the user, make the user move with the arrow keys, check when to change the state
+*/
+  p.game = function () {
+    p.background(243, 230, 255);
 
-    if (sketch.keyIsDown(sketch.RIGHT_ARROW)) {
+    // arrow keys interactions with the user
+    // when the right key is pressed, go right
+    if (p.keyIsDown(p.RIGHT_ARROW)) {
       user.x += user.speed;
-    } else if (sketch.keyIsDown(sketch.LEFT_ARROW)) {
+    }
+    // when the left key is pressed, go left
+    else if (p.keyIsDown(p.LEFT_ARROW)) {
       user.x -= user.speed;
     }
-    if (sketch.keyIsDown(sketch.UP_ARROW)) {
+    // when the up key is pressed, go up
+    if (p.keyIsDown(p.UP_ARROW)) {
       user.y -= user.speed;
-    } else if (sketch.keyIsDown(sketch.DOWN_ARROW)) {
+    }
+    // when the down key is pressed, go down
+    else if (p.keyIsDown(p.DOWN_ARROW)) {
       user.y += user.speed;
     }
 
-    let userX = sketch.constrain(user.x, 0, sketch.width);
-    let userY = sketch.constrain(user.y, 0, sketch.height);
+    // keep the user inside the canvas
+    let userX = p.constrain(user.x, 0, p.width);
+    let userY = p.constrain(user.y, 0, p.height);
 
-    sketch.fill(user.color.r, user.color.g, user.color.b);
-    sketch.noStroke();
-    sketch.ellipse(userX, userY, user.size);
+    // display the user with an ellipse
+    p.fill(user.color.r, user.color.g, user.color.b);
+    p.noStroke();
+    p.ellipse(userX, userY, user.size);
 
+    // create the pieces of food
     for (let i = 0; i < foods.length; i++) {
       let food = foods[i];
 
-      let r = sketch.random();
+      // make the piece turn at a random frequency
+      let r = p.random();
       if (r < 0.06) {
-        food.vx = sketch.random(-food.maxSpeed, food.maxSpeed);
-        food.vy = sketch.random(-food.maxSpeed, food.maxSpeed);
+        // change the direction of the food
+        food.vx = p.random(-food.maxSpeed, food.maxSpeed);
+        food.vy = p.random(-food.maxSpeed, food.maxSpeed);
       }
 
+      // add he velocity to the x and y coordinates
       food.x += food.vx;
       food.y += food.vy;
 
-      if (food.x < 0 + food.size / 2 || food.x > sketch.width - food.size / 2) {
+      // keep the food in the canvas
+      if (food.x < 0 + food.size / 2 || food.x > p.width - food.size / 2) {
         food.vx = -food.vx;
       }
-      if (
-        food.y < 0 + food.size / 2 ||
-        food.y > sketch.height - food.size / 2
-      ) {
+      if (food.y < 0 + food.size / 2 || food.y > p.height - food.size / 2) {
         food.vy = -food.vy;
       }
 
-      sketch.fill(food.color.r, food.color.g, food.color.b);
-      sketch.noStroke();
-      sketch.rect(food.x, food.y, food.size);
+      // display the piece of food with a rectangle
+      p.fill(food.color.r, food.color.g, food.color.b);
+      p.noStroke();
+      p.rect(food.x, food.y, food.size);
 
-      let d = sketch.dist(user.x, user.y, food.x, food.y);
-      if (d < user.size / 2) {
+      // look at the distance between the food and the user
+      let d = p.dist(user.x, user.y, food.x, food.y);
+      // if they overlap
+      if (d < user.size / 2 + food.size / 2) {
+        // remove the food from the foods' array
         foods.splice(i, 1);
       }
     }
 
+    // if the array is empty,
     if (foods.length <= 0) {
-      state[2] = `found`;
+      state[2] = `found`; // change the state to found
     }
   };
 };
@@ -518,6 +620,7 @@ new p5(s3);
 
 /*
 code partially taken from exercise slamina
+the user uses annyang to guess the name of an animal
 */
 let s4 = function (p) {
   // An array of animal names from
@@ -661,10 +764,16 @@ let s4 = function (p) {
 
   // The current animal name the user is trying to guess
   let currentAnimal = ``;
+  // the user's answer
   let currentAnswer = ``;
 
+  // array to store the letters of the animal' name
   let animalLetters = [];
 
+  /*
+setup()
+start annyang, choose the animal, create the letters of the animal's name
+*/
   p.setup = function () {
     let canvas4 = p.createCanvas(600, 400);
     canvas4.parent(`type-of-clue4`);
@@ -674,7 +783,6 @@ let s4 = function (p) {
       // Create the guessing command
       let commands = {
         "*animal": p.guessAnimal,
-        // Next: nextQuestion,
       };
       // Setup annyang and start
       annyang.addCommands(commands);
@@ -682,20 +790,26 @@ let s4 = function (p) {
       annyang.debug();
     }
 
-    currentAnswer = ``;
+    // choose a random animal from the animals array
     currentAnimal = p.random(animals);
+
+    // choose an animal's name that has at least 6 letters
     while (currentAnimal.length < 6) {
       currentAnimal = p.random(animals);
     }
-    console.log(currentAnimal);
 
+    // for every letter of the word
     for (let i = 0; i < currentAnimal.length; i++) {
       let letter = currentAnimal[i];
-      let myLetter = p.createLetter(letter);
-      animalLetters.push(myLetter);
+      let myLetter = p.createLetter(letter); // create a letter
+      animalLetters.push(myLetter); //push it in the letter's array
     }
   };
 
+  /*
+createLetter()
+create the letter's object
+*/
   p.createLetter = function (letter) {
     let theLetter = {
       x: p.random(10, p.width - 10),
@@ -706,11 +820,19 @@ let s4 = function (p) {
     return theLetter;
   };
 
+  /*
+draw()
+chooses what to do depending on whether the game is finished or not
+*/
   p.draw = function () {
+    // if the state of this clue is `game`
     if (state[3] === `game`) {
-      p.game();
-    } else if (state[3] === `found`) {
-      p.background(0, 0, 0);
+      p.game(); // play the game function
+    }
+    // if the game is finished
+    else if (state[3] === `found`) {
+      p.background(0, 0, 0); // set background to black
+      // display the clue in white, in the middle of the canvas
       p.textAlign(p.CENTER, p.CENTER);
       p.textSize(30);
       p.fill(255);
@@ -720,12 +842,18 @@ let s4 = function (p) {
     }
   };
 
+  /*
+game()
+randomly places the letters of the word on the canvas, displays the user's answer in red if it is wrong
+*/
   p.game = function () {
     p.background(255, 204, 204);
 
+    // for every letter of the word
     for (let i = 0; i < animalLetters.length; i++) {
       let theLetter = animalLetters[i];
 
+      // display the letter at a random position on the canvas
       p.push();
       p.fill(0);
       p.textAlign(p.CENTER, p.CENTER);
@@ -734,14 +862,13 @@ let s4 = function (p) {
       p.pop();
     }
 
+    // if the answer is correct
     if (currentAnswer === currentAnimal) {
-      p.push();
-      p.fill(0);
-      p.textAlign(p.CENTER, p.CENTER);
-      p.textSize(30);
-      p.text(currentAnswer, p.width / 2, p.height / 2);
-      p.pop();
-    } else {
+      state[3] = `found`; // go to the found state
+    }
+    // if the answer is incorrect
+    else {
+      // display the user's answer in red in the middle of the canvas
       p.push();
       p.fill(255, 0, 0);
       p.textAlign(p.CENTER, p.CENTER);
@@ -749,25 +876,31 @@ let s4 = function (p) {
       p.text(currentAnswer, p.width / 2, p.height / 2);
       p.pop();
     }
-
-    if (currentAnswer === currentAnimal) {
-      state[3] = `found`;
-    }
   };
 
+  /*
+guessAnimal()
+set the answer to lower case
+*/
   p.guessAnimal = function (animal) {
     currentAnswer = animal.toLowerCase();
   };
 };
 new p5(s4);
 
+/*
+find the kissing emoji among the winking emojis
+*/
 let s5 = function (p) {
-  let numWinks = 120;
-  let emojis = [];
+  let numWinks = 120; // number of emojis winking
+  let emojis = []; // array to store the emojis
+  // images
   let wink = undefined;
   let kiss = undefined;
+  // the kissing emoji to find
   let emojiToFind = undefined;
 
+  // circle that follows the mouse
   let user = {
     size: 20,
     x: undefined,
@@ -786,39 +919,48 @@ let s5 = function (p) {
     acceleration: 0.1,
   };
 
+  /*
+preload()
+preloads the images of emojis
+*/
   p.preload = function () {
     wink = p.loadImage(`assets/images/wink.png`);
     kiss = p.loadImage(`assets/images/kiss-emoji.png`);
   };
 
+  /*
+setup()
+create the canvas, the user's original position, the emojis
+*/
   p.setup = function () {
     let canvas5 = p.createCanvas(600, 400);
     canvas5.parent(`type-of-clue5`);
 
-    // p.imageMode(p.CENTER);
+    p.imageMode(p.CENTER);
 
-    user.x = p.random(0 + user.size / 2, p.width - user.size / 2);
-    user.y = p.random(0 + user.size / 2, p.height - user.size / 2);
+    // the user's position at the start of the program
+    user.x = p.mouseY;
+    user.y = p.mouseX;
 
+    // create the winking emojis
     for (let i = 0; i < numWinks; i++) {
       let emoji = p.createEmoji(wink);
-      // emoji.vx = p.random(-emoji.maxSpeed, emoji.maxSpeed);
-      // emoji.vy = p.random(-emoji.maxSpeed, emoji.maxSpeed);
-      emojis.push(emoji);
+      emojis.push(emoji); // add it to the emojis' array
     }
 
+    // create the kissing emoji
     emojiToFind = p.createEmoji(kiss);
   };
 
+  /*
+createEmoji()
+create the emoji's object
+*/
   p.createEmoji = function (myEmoji) {
     let mySize = 30;
+    // coordinates anywhere inside the canas
     let xPos = p.random(0 + mySize, p.width - mySize);
     let yPos = p.random(0 + mySize, p.height - mySize);
-    let d = p.dist(user.x, user.y, xPos, yPos);
-    while (d < user.size / 2) {
-      xPos = p.random(0 + mySize, p.width - mySize);
-      yPos = p.random(0 + mySize, p.height - mySize);
-    }
     let emoji = {
       x: xPos,
       y: yPos,
@@ -828,82 +970,111 @@ let s5 = function (p) {
     return emoji;
   };
 
+  /*
+draw()
+chooses what to do depending on whether the game is finished or not
+*/
   p.draw = function () {
+    // if the state of this clue is `game`
     if (state[4] === `game`) {
-      p.game();
-    } else if (state[4] === `found`) {
-      p.background(0, 0, 0);
+      p.game(); // play the game function
+    }
+    // if the game is finished
+    else if (state[4] === `found`) {
+      p.background(0, 0, 0); // set background to black
+      // display the clue in white, in the middle of the canvas
       p.textAlign(p.CENTER, p.CENTER);
       p.textSize(30);
       p.fill(255);
       p.text(`${cipherClues[4]}`, p.width / 2, p.height / 2);
-      console.log(`${cipherClues[4]}`);
       p.noLoop();
     }
   };
 
+  /*
+game()
+display the emojis and user and check when to change to the found state
+*/
   p.game = function () {
-    p.background(0, 0, 0);
+    p.background(0); // black background
+
+    // for loop to go through all the winking emojis of the array
     for (let i = 0; i < emojis.length; i++) {
       let emoji = emojis[i];
+      // display the emoji
       p.push();
       p.fill(255);
-      // p.ellipse(emoji.x, emoji.y, emoji.size, emoji.size);
-      p.image(wink, emoji.x, emoji.y, emoji.size, emoji.size);
+      p.image(wink, emoji.x, emoji.y, emoji.size, emoji.size); // display the image
       p.pop();
     }
 
+    // display the kissing emoji
     p.push();
     p.fill(255);
-    // p.ellipse(emoji.x, emoji.y, emoji.size, emoji.size);
     p.image(
       kiss,
       emojiToFind.x,
       emojiToFind.y,
       emojiToFind.size,
       emojiToFind.size
-    );
+    ); // display the image
     p.pop();
 
+    // display the user
     p.push();
+    // acceleration depending on the position of the mouse compared to the user
+    // acceleration on the x axis
     if (p.mouseX > user.x) {
       user.ax = user.acceleration;
     } else if (p.mouseX < user.x) {
       user.ax = -user.acceleration;
     }
+    // acceleration on the y axis
     if (p.mouseY > user.y) {
       user.ay = user.acceleration;
     } else if (p.mouseY < user.y) {
       user.ay = -user.acceleration;
     }
 
+    // add the acceleration to the x velocity
     user.vx += user.ax;
-    user.vx = p.constrain(user.vx, -user.maxSpeed, user.maxSpeed);
-
+    user.vx = p.constrain(user.vx, -user.maxSpeed, user.maxSpeed); // constrain so the user cannot go faster than a certain speed
+    // same for the y velocity
     user.vy += user.ay;
-    user.vy = p.constrain(user.vy, -user.maxSpeed, user.maxSpeed);
+    user.vy = p.constrain(user.vy, -user.maxSpeed, user.maxSpeed); // constrain so the user cannot go faster than a certain speed
 
+    // add the velocity to the coordinates of the user
     user.x += user.vx;
+    user.x = p.constrain(user.x, 0, p.width); // constrain the x to the inside of the canvas
     user.y += user.vy;
+    user.y = p.constrain(user.y, 0, p.height); // constrain the y to the inside of the canvas
 
+    // display the user
     p.fill(user.color.r, user.color.g, user.color.b, user.color.a);
     p.noStroke();
     p.ellipse(user.x, user.y, user.size);
     p.pop();
 
+    // find the distance between the ceter of the kiss emoji and the center of the user
     let d = p.dist(user.x, user.y, emojiToFind.x, emojiToFind.y);
-    if (d < user.size / 2) {
-      state[4] = `found`;
+    // if they are touching
+    if (d < user.size / 2 + emojiToFind.size / 2) {
+      state[4] = `found`; // change the state to found
     }
   };
 };
 new p5(s5);
 
+/*
+green and black sketch, the player has to get the canvas only one colour by clicking on it
+ */
 let s6 = function (p) {
+  // the user's mouse
   let user = {
     x: undefined,
     y: undefined,
     size: 10,
+    // magenta
     color: {
       r: 255,
       g: 0,
@@ -911,38 +1082,55 @@ let s6 = function (p) {
     },
   };
 
+  // the number of columns and rows constituting the canvas
   let numColumns = 6;
   let numRows = 4;
+  // array storing the squares
   let squares = [];
 
+  // the canvas' size
   let canvasWidth = 600;
   let canvasHeight = 400;
 
+  // the squares' size
   let squareSize = canvasWidth / numColumns;
-  let myColor = p.color(230, 255, 230);
-  let chooseColor = [0, myColor];
 
+  let myColor = p.color(230, 255, 230); // light green
+  let chooseColor = [0, myColor]; // the colors the square can be (black or light green)
+
+  // an array storing the number of black squares
   let blackSquares = [];
 
+  /*
+setup()
+create the canvas, remove the cursor, create the squares
+*/
   p.setup = function () {
     let canvas6 = p.createCanvas(canvasWidth, canvasHeight);
     canvas6.parent(`type-of-clue6`);
 
-    p.noCursor();
+    p.noCursor(); // remove the usual cursor
 
+    // for loop to create squares aligned in vertical lines
     for (let i = 0; i < numColumns; i++) {
+      // for loop for the number of rows
       for (let j = 0; j < numRows; j++) {
-        let x = i * squareSize;
-        let y = j * squareSize;
-        let square = p.createSquare(x, y);
-        squares.push(square);
+        let x = i * squareSize; // x coordinates of the square using i
+        let y = j * squareSize; // y coordinates of the square using j
+        let square = p.createSquare(x, y); // create a square at those coordinates
+        squares.push(square); // add the square to the array
+        // if the square is black
         if (square.color === chooseColor[0]) {
-          blackSquares.push(square);
+          blackSquares.push(square); // add it to the black square array
         }
       }
     }
   };
 
+  /*
+createSquare()
+create a square object
+*/
   p.createSquare = function (xPos, yPos) {
     let square = {
       x: xPos,
@@ -954,43 +1142,65 @@ let s6 = function (p) {
     return square;
   };
 
+  /*
+draw()
+chooses what to do depending on whether the game is finished or not, display the costumized cursor
+*/
   p.draw = function () {
     user.x = p.mouseX;
     user.y = p.mouseY;
+
+    // if the state of this clue is `game`
     if (state[5] === `game`) {
-      p.game();
-    } else if (state[5] === `found`) {
-      p.background(0, 0, 0);
+      p.game(); // play the game function
+    }
+    // if the game is finished
+    else if (state[5] === `found`) {
+      p.background(0, 0, 0); // set background to black
+      // display the clue in white, in the middle of the canvas
       p.textAlign(p.CENTER, p.CENTER);
       p.textSize(30);
       p.fill(255);
       p.text(`${cipherClues[5]}`, p.width / 2, p.height / 2);
-      console.log(`${cipherClues[5]}`);
+      p.noLoop();
     }
+    // cursor
     p.noStroke();
     p.fill(user.color.r, user.color.g, user.color.b);
     p.ellipse(p.mouseX, p.mouseY, user.size);
   };
 
+  /*
+game()
+display the squares and check when to change to the found state
+*/
   p.game = function () {
-    p.background(230);
+    p.background(230); // grey background (not visible)
 
+    // for loop to go through every square of the squares array
     for (let i = 0; i < squares.length; i++) {
       let square = squares[i];
+      // create a rectangle with the square's information
       p.noStroke();
       p.fill(square.color);
       p.rect(square.x, square.y, square.width, square.height);
     }
 
-    for (let i = 0; i < squares.length; i++) {}
+    // if the blackSquares array is equal to 0 or the total number of square (all the squares are the same color)
     if (blackSquares.length === squares.length || blackSquares.length < 1) {
-      state[5] = `found`;
+      state[5] = `found`; // set the state to found
     }
   };
 
+  /*
+mousePressed()
+when clicking on a square, change its color
+*/
   p.mousePressed = function () {
+    // go through every square
     for (let i = 0; i < squares.length; i++) {
       let square = squares[i];
+      // if the mouse is pressed on a black square
       if (
         user.x + user.size / 2 > square.x &&
         user.x - user.size / 2 < square.x + square.width &&
@@ -998,17 +1208,19 @@ let s6 = function (p) {
         user.y - user.size / 2 < square.y + square.height &&
         square.color === chooseColor[0]
       ) {
-        square.color = chooseColor[1];
-        blackSquares.splice(0, 1);
-      } else if (
+        square.color = chooseColor[1]; // change its color to green
+        blackSquares.splice(0, 1); // remove a square from the black sqaures' array
+      }
+      // if the mouse is pressed on a green square
+      else if (
         user.x + user.size / 2 > square.x &&
         user.x - user.size / 2 < square.x + square.width &&
         user.y + user.size / 2 > square.y &&
         user.y - user.size / 2 < square.y + square.height &&
         square.color === chooseColor[1]
       ) {
-        square.color = chooseColor[0];
-        blackSquares.push(square);
+        square.color = chooseColor[0]; // change its color to black
+        blackSquares.push(square); // add it to the black squares' array
       }
     }
   };
@@ -1016,37 +1228,28 @@ let s6 = function (p) {
 new p5(s6);
 
 /*******************************
+End of p5 sketches
  *******************************/
 
 /*******************************
-
 clues dialog box
-
 make the clue box into a dialog box
-
 *******************************/
 $(function () {
   $("#clue-dialog").dialog({
-    autoOpen: false,
+    autoOpen: false, // doesn't open at the start
     height: `auto`,
     width: 200,
-
-    // [
-    // Math.random() * $(window).width()
-    //   Math.random() * $(window).height(),
-    // ],
   });
 });
 
 /*******************************
-
 text dialog box
-
 make the hints visible and invisible
-
 *******************************/
+// the hints start hidden
 let hintHidden = true;
-// set up the dialog box for the lorem ipsum text and the hint button
+// set up the dialog box for the lorem ipsum text, the answer box and the hint and submit buttons
 $(function () {
   $(`#the-text`).dialog({
     autoOpen: false, // doesn't open at the start
@@ -1070,28 +1273,14 @@ $(function () {
           }
         },
       },
-      { text: `Submit`, click: submitAnswer },
+      { text: `Submit`, click: submitAnswer }, // play the submit function when submit is clicked (verifies the answer)
     ],
   });
 });
 
-$(`#letter-hint`).on(`click`, function (event) {
-  let hintVisible = false;
-  if (hintVisible) {
-    $(`.word`).removeClass("hint", 1000);
-    hintVisible = false;
-  } else {
-    $(`.word`).addClass("hint", 1000);
-    hintVisible = true;
-  }
-});
-
 /*******************************
-
 answer dialog box
-
 make the answer box into a dialog box
-
 *******************************/
 $(function () {
   $("#entry-box").dialog({
@@ -1101,28 +1290,35 @@ $(function () {
 
     buttons: [
       {
-        text: `Submit`,
-        click: submitAnswer,
+        text: `Submit`, // submit buttom
+        click: submitAnswer, // what happens when the button is clicked
       },
     ],
   });
 });
 
-// look at the answer the user inputed into the answer box when the submit button is pressed
+/*******************************
+submitAnswer()
+verifies the answer the user inputed into the answer box when the submit button is pressed
+*******************************/
 function submitAnswer() {
   // the user's answer
   let userAnswer = $(`#user-answer`).val();
   // if the answer is correct
   if (userAnswer === chosenWord) {
-    $(`#user-answer`).val(``);
+    $(`#user-answer`).val(``); // empty the answer box
+    // set the border and the text color to black
     $(`#user-answer`).css({
       color: `#000000`,
       "border-color": `#000000`,
     });
+    // play the ending function
+    ending();
   }
   // if the answer is wrong
   else {
-    $(`#user-answer`).val(`Wrong! Try again!`);
+    $(`#user-answer`).val(`Wrong! Try again!`); // set the value of the answer box to Wrong
+    // set the border and text color to red
     $(`#user-answer`).css({
       color: `#ff0000`,
       "border-color": `#ff0000`,
@@ -1130,16 +1326,10 @@ function submitAnswer() {
   }
 }
 
-/*******************************
-
-
-*******************************/
-
 /**
 processResult(data)
-
-choose a random word from the json file,
-separates the word into letters and finds all the times each letter is appears in the lorem ipsum text,
+chooses a random word from the json file,
+separates the word into letters and finds all the times each letter appears in the lorem ipsum text,
 choose one of the positions in the text,
 add the lorem ipsum text
 */
@@ -1153,15 +1343,11 @@ function processResult(data) {
       data.commonWords[Math.floor(Math.random() * data.commonWords.length)];
   }
 
-  console.log(chosenWord); // show the word in the console
-
   let listOfSelectedPos = []; // empty array in which the chosen positions for the letters will be put
 
   // for each letter of the word
   for (let i = 0; i < chosenWord.length; i++) {
     let letter = chosenWord[i];
-
-    let clue = typesOfClues[i];
 
     // list of the positions for all the times the letter appears in the lorem ipsum
     let listOfPositions = findCharacterPos(letter);
@@ -1170,82 +1356,81 @@ function processResult(data) {
     // choose a random position from the listOfPositions array for this letter of the word
     let selectedPosition = Math.floor(Math.random() * listOfPositions.length);
     // add the letter and it's position in the lorem ipsum to the array for the final chosen position
-    listOfSelectedPos.push([letter, listOfPositions[selectedPosition], clue]);
+    listOfSelectedPos.push([letter, listOfPositions[selectedPosition]]);
 
     // display the coded word on the page (the plus 1 is to start counting at 1 instead of 0 like in an array)
     let codeString = `${listOfPositions[selectedPosition][0] + 1}:${
       listOfPositions[selectedPosition][1] + 1
     }`;
 
-    // show the position of the letter
-    console.log(listOfSelectedPos[i][0] + ` => ` + codeString);
-
+    // add the code to the cipher array
     cipherClues.push(codeString);
   }
-
-  console.log(`the cipher array: ` + cipherClues);
 
   // add the lorem ipsum text
   addLoremIpsum(listOfSelectedPos);
 
+  // create the clues according to the chosen coordinates
   createClues();
-
-  // for (let i = 0; i < chosenWord.length; i++) {
-  //   if (state[i] === `found`) {
-  //     $(`#button-clue${i + 1}`).text(`${cipherClues[i]}`);
-  //     console.log(`HELLOOOOOO!O!O!OO!`);
-  //   }
-  // }
-}
-
-/*
-https://www.intechgrity.com/howto-use-jquery-ui-dialog-as-reusable-modal-prompt/#
-*/
-function createClues() {
-  let allCluesButtons = [];
-  let allClues = [];
-  // newClue.addClass(`visible`);
-
-  for (let i = 0; i < chosenWord.length; i++) {
-    let $buttonForClue = $(`<button></button>`);
-    let $newClue = $(`<div></div>`);
-
-    $buttonForClue.text(`Letter ${i + 1}`); // text in button
-    $buttonForClue.addClass(`button-for-clues`);
-    $buttonForClue.attr("id", `button-clue${i + 1}`);
-    $newClue.addClass(`character-clue-dialogs`);
-    $newClue.attr("id", `type-of-clue${i + 1}`);
-    $newClue.attr("title", `Clue ${i + 1}`);
-
-    allCluesButtons.push($buttonForClue);
-    allClues.push($newClue);
-    $(`#clue-dialog`).append($buttonForClue);
-    $(`#clue-dialog`).append($newClue);
-    $(`#clue-dialog`).append(`<br/>`);
-  }
-
-  $(`.button-for-clues`).each(function () {
-    let $clueDialog;
-
-    $clueDialog = $(this)
-      .next("div.character-clue-dialogs")
-      .dialog({ autoOpen: false, height: 500, width: 637 });
-    openCloseDialog(this, $clueDialog);
-  });
-
-  $(`#clues-dialog`).append(allCluesButtons);
-  $(`#clues-dialog`).append(allClues);
-  console.log(allClues);
 }
 
 /*******************************
-
-
+createClues()
+create the button and dialog of each clue
 *******************************/
+function createClues() {
+  // the buttons to get to the clues
+  let allCluesButtons = [];
+  // the dialogs in which the clues are
+  let allClues = [];
+
+  // create a clue for every letter of the word
+  for (let i = 0; i < chosenWord.length; i++) {
+    // create a button
+    let $buttonForClue = $(`<button></button>`);
+    // create a div for the dialog
+    let $newClue = $(`<div></div>`);
+
+    // button
+    $buttonForClue.text(`Letter ${i + 1}`); // text in button
+    $buttonForClue.addClass(`button-for-clues`); // add a class common to all the clue buttons
+    $buttonForClue.attr("id", `button-clue${i + 1}`); // add an id unique to every clue
+
+    // div
+    $newClue.addClass(`character-clue-dialogs`); // add a class common to all the clue divs
+    $newClue.attr("id", `type-of-clue${i + 1}`); // add an id unique to every clue
+    $newClue.attr("title", `Clue ${i + 1}`); // give a title to the div/dialog
+
+    // add the button and div to the appropriate array
+    allCluesButtons.push($buttonForClue); // add button to button array
+    allClues.push($newClue); // add div to dialog array
+
+    // add the button and div to the dialog containing the clues' buttons
+    $(`#clue-dialog`).append($buttonForClue);
+    $(`#clue-dialog`).append($newClue);
+    $(`#clue-dialog`).append(`<br/>`); // skip a line to have the buttons one under another instead of next to each other
+
+    // add css to the button
+    $(`#button-clue${i + 1}`).css({
+      "font-family": "monospace",
+      "font-weight": "bold",
+      "font-size": "1rem",
+    });
+  }
+
+  // go through every button that has the class "button-for-clues"
+  $(`.button-for-clues`).each(function () {
+    // take the div that follows after the button that has that class and put it in a variable
+    let $clueDialog;
+    $clueDialog = $(this)
+      .next("div.character-clue-dialogs")
+      .dialog({ autoOpen: false, height: 500, width: 637 }); // create a dialog for that div
+    openCloseDialog(this, $clueDialog); // make the dialog open and close when its button is clicked
+  });
+}
 
 /**
 findCharacterPos(char)
-
 find all the appearances of the letter of the word in the lorem ipsum text
 */
 function findCharacterPos(char) {
@@ -1278,7 +1463,6 @@ function findCharacterPos(char) {
 
 /**
 addLoremIpsum(listOfLetterPos)
-
 display the lorem ipsum text and add a span around the letter that we'll use in the book cipher
 */
 function addLoremIpsum(listOfLetterPos) {
@@ -1359,11 +1543,8 @@ function addLoremIpsum(listOfLetterPos) {
 }
 
 /*******************************
-
 openCloseDialog(button, dialogBox)
-
 function to open and close a dialog box when its designated button is clicked
-
 *******************************/
 function openCloseDialog(button, dialogBox) {
   let textHidden = true; // see if the dialog is displayed
@@ -1374,12 +1555,6 @@ function openCloseDialog(button, dialogBox) {
     if (textHidden) {
       $(dialogBox).dialog("open", "moveToTop"); // open it
 
-      $(dialogBox).dialog("widget").position({
-        my: "center",
-        at: "center",
-        of: window,
-        collision: "flip",
-      });
       textHidden = false;
     }
     // if the dialog box is open
@@ -1391,9 +1566,46 @@ function openCloseDialog(button, dialogBox) {
 }
 
 /*******************************
+ending()
+what happens once the user finds the right word.
+ - closes all dialogs
+ - shows a message
  *******************************/
+function ending() {
+  // goes through all the clue dialogs
+  $(`.character-clue-dialogs`).each(function () {
+    $(this).dialog("close"); // close the dialog
+  });
 
-// function randomArrayPos(array) {
-//   let i = Math.floor(Math.random(array.length));
-//   return array[i];
-// }
+  // close the 2 starting dialogs
+  $(`#the-text`).dialog("close"); // the one that has the lorem ipsum text
+  $(`#clue-dialog`).dialog("close"); // the one that has the buttons for the clues
+
+  // remove the start button
+  $(`#starting-button`).remove();
+
+  // 3 html lines of text that appear at the end of the program
+  let $endText = $(`<h2></h2>`);
+  let $bookTitle = $(`<h2></h2>`);
+  let $findIt = $(`<h2></h2>`);
+
+  // give them an id for their css
+  $endText.attr("id", `end-text`);
+  $bookTitle.attr("id", `book-title`);
+  $findIt.attr("id", `find-it`);
+
+  // create the text that is in each line
+  let endText = `The next message will be hidden in the book`;
+  let bookTitle = `"The Mysterious Book of Life and ${chosenWord}"`;
+  let findItText = `You may or may not find this book at a library...`;
+
+  // add the text to each html element
+  $endText.text(endText);
+  $bookTitle.text(bookTitle);
+  $findIt.text(findItText);
+
+  // append the alement to the background-page section of the body (not in a dialog box)
+  $(`#background-page`).append($endText);
+  $(`#background-page`).append($bookTitle);
+  $(`#background-page`).append($findIt);
+}

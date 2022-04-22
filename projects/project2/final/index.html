@@ -10,13 +10,13 @@
       user-scalable="0"
     />
 
-    <title>Mystery ???</title>
+    <title>M??t?r? ???</title>
 
     <!-- CSS stylesheet(s) -->
     <link rel="stylesheet" type="text/css" href="css/jquery-ui.css" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
 
-    <!-- Library script(s) go here -->
+    <!-- jquery and jquery ui -->
     <script
       src="https://code.jquery.com/jquery-3.6.0.min.js"
       integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
@@ -28,22 +28,27 @@
       crossorigin="anonymous"
     ></script>
 
+    <!-- p5 -->
     <script src="js/libraries/p5.min.js"></script>
     <script src="js/libraries/p5.sound.min.js"></script>
 
+    <!-- ml5 -->
     <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
 
+    <!-- annyang -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
   </head>
 
   <body>
+    <!-- section for the non-dialog boxes elements -->
     <section id="background-page">
+      <!-- start button -->
       <input id="starting-button" type="button" value="Start" />
-
-      <p id="secret-code"></p>
     </section>
 
+    <!-- section for the lorem ipsum text and answer box -->
     <section id="lorem-ipsum">
+      <!-- dialog box -->
       <div id="the-text" title="Text">
         <h2 id="title">Book Cipher</h2>
         <div id="text"></div>
@@ -57,14 +62,13 @@
       </div>
     </section>
 
+    <!-- section for the clues (both the clue dialog that opens at the beginning and the different p5 clues) -->
     <section id="clues">
-      <div id="clue-dialog" title="Clues">
-        <!-- <input type="button" value="HElLo" /> -->
-      </div>
-      <!-- <div id="first-character" class="character-clues"></div> -->
+      <!-- dialog box -->
+      <div id="clue-dialog" title="Clues"></div>
     </section>
 
-    <!-- My script(s) -->
+    <!-- My script -->
     <script src="js/script.js"></script>
   </body>
 </html>

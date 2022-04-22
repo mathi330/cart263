@@ -1,9 +1,10 @@
 body {
   background-color: #1e1e1e;
+  font-family: monospace;
 }
 
+/* lorem ipsum text style */
 #lorem-ipsum {
-  font-family: monospace;
   font-size: 1.2rem;
   width: 50vw;
   margin: auto;
@@ -15,8 +16,19 @@ body {
 h2 {
   text-align: center;
   font-size: 2.8rem;
+  font-family: monospace;
 }
 
+p {
+  font-family: monospace;
+  font-size: 1rem;
+}
+
+h3 {
+  font-family: monospace;
+}
+
+/* start button style */
 #starting-button {
   position: absolute;
   top: 50%;
@@ -30,6 +42,12 @@ h2 {
   font-size: 1.2rem;
 }
 
+/* title of the lorem ipsum dialog box */
+#title {
+  font-family: monospace;
+}
+
+/* class added to the letters of the mystery word when the hint button is pressed */
 .hint {
   color: #ff0000;
   font-size: 1.5rem;
@@ -44,20 +62,12 @@ h2 {
   margin: 10%;
 }
 
-#secret-code {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  font-size: 1.5rem;
-  font-weight: bold;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
 #user-answer {
+  font-family: monospace;
   border-radius: 5px;
 }
 
+/* buttons clicked to access the p5 clues */
 .button-for-clues {
   margin: 3px;
   padding-top: 4px;
@@ -71,4 +81,41 @@ h2 {
 
 button:hover {
   background-color: #bfbfbf;
+}
+
+/* the last 3 lines that appear once the cipher is solved */
+/* first line: */
+#end-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -110%);
+
+  color: #ffffff;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+/* second line: */
+#book-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+
+  color: #ffffff;
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+/* third line: */
+#find-it {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 220%);
+
+  color: #ffffff;
+  text-align: center;
+  font-size: 1.1rem;
 }
