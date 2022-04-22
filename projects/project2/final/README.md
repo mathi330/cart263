@@ -11,6 +11,16 @@ I liked the idea of leaving the ending opened to let the player imagine what the
 
 In terms of problems with the code, I think it struggles to load sometimes and I have to reload the page a couple of times to get it to work...
 
-In terms of libraries and techniques that I used in this project, there are p5, ml5, annyang, JSON and jQuery UI.
+In terms of libraries and techniques that I used in this project, there are p5, ml5, annyang!, JSON, jQuery and jQuery UI.
 
-For the second clue, the riddle comes from here: https://www.riddlesandanswers.com/v/233435/i-have-no-voice-and-yet-i-speak-to-you-i-tell-of-all-things-in-the-world-that-people-do-i-have-l/
+For the second clue, the riddle comes from: https://www.riddlesandanswers.com/v/233435/i-have-no-voice-and-yet-i-speak-to-you-i-tell-of-all-things-in-the-world-that-people-do-i-have-l/
+
+JSON file comes from: https://github.com/dariusk/corpora/blob/master/data/words/common.json
+animal list comes from: https://github.com/dariusk/corpora/blob/master/data/animals/common.json
+
+Libraries:
+p5.js: https://p5js.org/
+ml5.js: https://ml5js.org/
+annyang!: https://www.talater.com/annyang/
+jQuery: https://jquery.com/
+jQuery UI: https://jqueryui.com/
